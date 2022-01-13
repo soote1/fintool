@@ -3,7 +3,7 @@
         "prog": "fintool",
         "args": [],
         "subparsers": {
-            "id": "action",
+            "id": "cmd",
             "required": true,
             "subparsers_cfgs": [
                 {
