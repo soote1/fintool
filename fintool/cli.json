@@ -1,0 +1,163 @@
+{
+    "argsparser": {
+        "prog": "fintool",
+        "args": [],
+        "subparsers": {
+            "id": "action",
+            "required": true,
+            "subparsers_cfgs": [
+                {
+                    "name": "add",
+                    "help": "Add a transaction",
+                    "args": [
+                        {
+                            "id": "--type",
+                            "kwargs": {
+                                "required": true,
+                                "help": "Transaction type"
+                            }
+                        },
+                        {
+                            "id": "--date",
+                            "kwargs": {
+                                "required": true,
+                                "help": "Transaction date"
+                            }
+                        },
+                        {
+                            "id": "--amount",
+                            "kwargs": {
+                                "required": true,
+                                "help": "Transaction amount"
+                            }
+                        },
+                        {
+                            "id": "--tags",
+                            "kwargs": {
+                                "required": true,
+                                "help": "A list of tags describing the transaction"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "remove",
+                    "help": "Remove a transaction",
+                    "args": [
+                        {
+                            "id": "--id",
+                            "kwargs": {
+                                "help": "Transaction id",
+                                "required": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "list",
+                    "help": "List transactions",
+                    "args": [
+                        {
+                            "id": "--type",
+                            "kwargs": {
+                                "help": "Transaction type to filter transactions"
+                            }
+                        },
+                        {
+                            "id": "--date",
+                            "kwargs": {
+                                "help": "Date interval to filter transactions"
+                            }
+                        },
+                        {
+                            "id": "--tags",
+                            "kwargs": {
+                                "help": "Tags to filter transactions"
+                            }
+                        },
+                        {
+                            "id": "--amount",
+                            "kwargs": {
+                                "help": "Amount range to filter transactions"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "show",
+                    "help": "Show transactions in some chart",
+                    "args": [
+                        {
+                            "id": "--chart-type",
+                            "kwargs": {
+                                "help": "The chart type to use to plot transactions",
+                                "required": true
+                            }
+                        },
+                        {
+                            "id": "--type",
+                            "kwargs": {
+                                "help": "Transaction type to filter transactions"
+                            }
+                        },
+                        {
+                            "id": "--date",
+                            "kwargs": {
+                                "help": "Date interval to filter transactions"
+                            }
+                        },
+                        {
+                            "id": "--tags",
+                            "kwargs": {
+                                "help": "Tags to filter transactions"
+                            }
+                        },
+                        {
+                            "id": "--amount",
+                            "kwargs": {
+                                "help": "Amount range to filter transactions"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "edit",
+                    "help": "Edit a transaction",
+                    "args": [
+                        {
+                            "id": "--id",
+                            "kwargs": {
+                                "required": true,
+                                "help": "Transaction id"
+                            }
+                        },
+                        {
+                            "id": "--type",
+                            "kwargs": {
+                                "help": "New transaction type"
+                            }
+                        },
+                        {
+                            "id": "--date",
+                            "kwargs": {
+                                "help": "New transaction date"
+                            }
+                        },
+                        {
+                            "id": "--amount",
+                            "kwargs": {
+                                "help": "New transaction amount"
+                            }
+                        },
+                        {
+                            "id": "--tags",
+                            "kwargs": {
+                                "help": "New transaction tags"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,4 +1,6 @@
 import sys
+import json
+import pathlib
 import argparse
 
 
@@ -11,6 +13,8 @@ HELP = 'help'
 ARGS = 'args'
 PROGRAM_NAME = "fintool"
 KWARGS = "kwargs"
+CLI_CFG_FILE = "cli.json"
+ARGS_PARSER_CFG = "argsparser"
 
 
 class ArgsParser:
@@ -77,177 +81,15 @@ class Command:
 class CLI:
 
     def __init__(self):
-        """Initialize cli object."""
-        self._args_parser = ArgsParser(self.get_supported_commands())
+        """Load configuration from json file and
+        initialize args parser object.
+        """
 
-    def get_supported_commands(self):
-      """
-      Define the supported commands in a dict
-      that is compatible with ArgsParser and
-      return it.
-      """
+        cli_cfg_path = pathlib.Path(__file__).parent.joinpath(CLI_CFG_FILE).resolve()
+        with cli_cfg_path.open() as f:
+            self._cli_cfg = json.loads(f.read())
 
-      return {
-          "prog": PROGRAM_NAME,
-          "args": [],
-          "subparsers": {
-              "id": "action",
-              "required": True,
-              "subparsers_cfgs": [
-                    {
-                        "name": "add",
-                        "help": "Add a transaction",
-                        "args": [
-                            {
-                                "id": "--type",
-                                "kwargs": {
-                                    "required": True,
-                                    "help": "Transaction type"
-                                }
-                            },
-                            {
-                                "id": "--date",
-                                "kwargs": {
-                                    "required": True,
-                                    "help": "Transaction date"
-                                }
-                            },
-                            {
-                                "id": "--amount",
-                                "kwargs": {
-                                    "required": True,
-                                    "help": "Transaction amount"
-                                }
-                            },
-                            {
-                                "id": "--tags",
-                                "kwargs": {
-                                    "required": True,
-                                    "help": "A list of tags describing the transaction"
-                                }
-                            },
-                        ],
-                    },
-                  {
-                        "name": "remove",
-                        "help": "Remove a transaction",
-                        "args": [
-                            {
-                                "id": "--id",
-                                "kwargs": {
-                                    "help": "Transaction id",
-                                    "required": True,
-                                }
-                            }
-                        ]
-                    },
-                  {
-                        "name": "list",
-                        "help": "List transactions",
-                        "args": [
-                            {
-                                "id": "--type",
-                                "kwargs": {
-                                    "help": "Transaction type to filter transactions"
-                                }
-                            },
-                            {
-                                "id": "--date",
-                                "kwargs": {
-                                    "help": "Date interval to filter transactions"
-                                }
-                            },
-                            {
-                                "id": "--tags",
-                                "kwargs": {
-                                    "help": "Tags to filter transactions"
-                                }
-                            },
-                            {
-                                "id": "--amount",
-                                "kwargs": {
-                                    "help": "Amount range to filter transactions"
-                                }
-                            },
-                        ]
-                    },
-                  {
-                        "name": "show",
-                        "help": "Show transactions in some chart",
-                        "args": [
-                            {
-                                "id": "--chart-type",
-                                "kwargs": {
-                                    "help": "The chart type to use to plot transactions",
-                                    "required": True
-                                }
-                            },
-                            {
-                                "id": "--type",
-                                "kwargs": {
-                                    "help": "Transaction type to filter transactions"
-                                }
-                            },
-                            {
-                                "id": "--date",
-                                "kwargs": {
-                                    "help": "Date interval to filter transactions"
-                                }
-                            },
-                            {
-                                "id": "--tags",
-                                "kwargs": {
-                                    "help": "Tags to filter transactions"
-                                }
-                            },
-                            {
-                                "id": "--amount",
-                                "kwargs": {
-                                    "help": "Amount range to filter transactions"
-                                }
-                            },
-                        ]
-                    },
-                  {
-                        "name": "edit",
-                        "help": "Edit a transaction",
-                        "args": [
-                            {
-                                "id": "--id",
-                                "kwargs": {
-                                    "required": True,
-                                    "help": "Transaction id"
-                                }
-                            },
-                            {
-                                "id": "--type",
-                                "kwargs": {
-                                    "help": "New transaction type"
-                                }
-                            },
-                            {
-                                "id": "--date",
-                                "kwargs": {
-                                    "help": "New transaction date"
-                                }
-                            },
-                            {
-                                "id": "--amount",
-                                "kwargs": {
-                                    "help": "New transaction amount"
-                                }
-                            },
-                            {
-                                "id": "--tags",
-                                "kwargs": {
-                                    "help": "New transaction tags"
-                                }
-                            },
-                        ],
-                    },
-              ]
-          }
-      }
+        self._args_parser = ArgsParser(self._cli_cfg[ARGS_PARSER_CFG])
 
     def parse_args(self, args):
         """
