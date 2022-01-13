@@ -6,7 +6,7 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_add_cmd(self):
         expected = {
-            'action': 'add',
+            'cmd': 'add',
             'type': 'some',
             'date': 'other',
             'amount': '12.12',
@@ -31,7 +31,7 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_parse_remove_cmd(self):
-        expected = {'action': 'remove', 'id': 'aasd'}
+        expected = {'cmd': 'remove', 'id': 'aasd'}
 
         cmd = ["remove", "--id", "aasd"]
 
@@ -42,7 +42,7 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_list_cmd(self):
         expected = {
-            'action': 'list',
+            'cmd': 'list',
             'type': 'income',
             'date': 'sad-asdasd',
             'tags': 'a,b,c',
@@ -68,7 +68,7 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_show_cmd(self):
         expected = {
-            'action': 'show',
+            'cmd': 'show',
             'chart_type': 'pie',
             'type': 'income',
             'date': 'sad-asdasd',
@@ -97,7 +97,7 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_edit_cmd(self):
         expected = {
-            'action': 'edit',
+            'cmd': 'edit',
             'id': 'some-id',
             'type': 'some-type',
             'date': 'some-date',
@@ -123,6 +123,41 @@ class TestCLI(unittest.TestCase):
         actual = cli.parse_args(cmd)
 
         self.assertEqual(actual, expected)
+
+    def test_create_add_cmd(self):
+        expected = fintool.cli.Command("add", [])
+        actual = fintool.cli.CLI().create_cmd("add")
+
+        self.assertEqual(actual._cmd, expected._cmd)
+        self.assertEqual(actual._actions, expected._actions)
+
+    def test_create_remove_cmd(self):
+        expected = fintool.cli.Command("remove", [])
+        actual = fintool.cli.CLI().create_cmd("remove")
+
+        self.assertEqual(actual._cmd, expected._cmd)
+        self.assertEqual(actual._actions, expected._actions)
+
+    def test_create_list_cmd(self):
+        expected = fintool.cli.Command("list", [])
+        actual = fintool.cli.CLI().create_cmd("list")
+
+        self.assertEqual(actual._cmd, expected._cmd)
+        self.assertEqual(actual._actions, expected._actions)
+
+    def test_create_show_cmd(self):
+        expected = fintool.cli.Command("show", [])
+        actual = fintool.cli.CLI().create_cmd("show")
+
+        self.assertEqual(actual._cmd, expected._cmd)
+        self.assertEqual(actual._actions, expected._actions)
+
+    def test_create_edit_cmd(self):
+        expected = fintool.cli.Command("edit", [])
+        actual = fintool.cli.CLI().create_cmd("edit")
+
+        self.assertEqual(actual._cmd, expected._cmd)
+        self.assertEqual(actual._actions, expected._actions)
 
     def test_execute_cmd(self):
         pass  # TODO

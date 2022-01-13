@@ -15,6 +15,12 @@ PROGRAM_NAME = "fintool"
 KWARGS = "kwargs"
 CLI_CFG_FILE = "cli.json"
 ARGS_PARSER_CFG = "argsparser"
+CLI_CMD = "cmd"
+ADD_CMD = "add"
+REMOVE_CMD = "remove"
+LIST_CMD = "list"
+SHOW_CMD = "show"
+EDIT_CMD = "edit"
 
 
 class ArgsParser:
@@ -70,12 +76,42 @@ class ArgsParser:
 
 
 class Command:
-    def __init__(self, action, details):
-        self._action = action
-        self._details = details
+    def __init__(self, cmd, actions):
+        self._cmd = cmd
+        self._actions = actions
 
-    def __str__(self):
-        return f"action: {self._action} details: {self._details}"
+    def __repr__(self):
+        return f"cmd: {self._cmd} actions: {self._actions}"
+
+
+class CommandProcessor:
+    def __init__(self):
+        pass
+
+    def process(self, cmd, data):
+        """Execute a list of actions from
+        a given command in sequential order.
+
+        Args:
+            cmd (Command): The command to be processed
+            data (list): The list of associated actions
+        """
+
+        for action in cmd._actions:
+            action().exec(data)
+
+
+SUPPORTED_CMDS = {
+    ADD_CMD: [],
+    REMOVE_CMD: [],
+    LIST_CMD: [],
+    SHOW_CMD: [],
+    EDIT_CMD: [],
+}
+
+
+class UnsupportedCmdError(Exception):
+    pass
 
 
 class CLI:
@@ -90,6 +126,7 @@ class CLI:
             self._cli_cfg = json.loads(f.read())
 
         self._args_parser = ArgsParser(self._cli_cfg[ARGS_PARSER_CFG])
+        self._cmd_processor = CommandProcessor()
 
     def parse_args(self, args):
         """
@@ -99,14 +136,40 @@ class CLI:
 
         return self._args_parser.parse(args)
 
-    def execute_cmd(self, cmd):
-        print(cmd)
+    def create_cmd(self, cmd_id):
+        """Create a Command object from given cmd id.
 
-    def init(self, args):
-      cmd = self.parse_args(args)
-      self.execute_cmd(cmd)
+        Raise UnsupportedCmdError if cmd_id contains an invalid value.
+
+        Args:
+            cmd_id (str): Command id
+        """
+
+        try:
+            cmd_actions = SUPPORTED_CMDS[cmd_id]
+            return Command(cmd_id, cmd_actions)
+        except KeyError as e:
+            raise UnsupportedCmdError(f"Unsupported command: {e}")
+
+
+    def run(self, args):
+        """Main cli method that starts by parsing
+        provided cli arguments, next creates a command
+        object and calls the process() method.
+
+        Args:
+            args (list): A list of cli arguments
+        """
+
+        try:
+            parsed_args = self.parse_args(args)
+            cmd = self.create_cmd(parsed_args[CLI_CMD])
+            cmd.process(parsed_args)
+        except Exception as e:
+            print(e)
+            sys.exit(1)
 
 
 if __name__ == "__main__":
     cli_obj = CLI()
-    cli_obj.init(sys.argv[1:])
+    cli_obj.run(sys.argv[1:])
