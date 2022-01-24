@@ -3,6 +3,8 @@ import json
 import pathlib
 import argparse
 
+from fintool.actions import CreateTransaction, SaveTransaction
+
 
 SUBPARSERS = 'subparsers'
 REQUIRED = 'required'
@@ -41,8 +43,8 @@ class ArgsParser:
     def load_subparsers(self, subparsers_config, parent_parser):
         """Add subparsers to parent parser recursively.
         Positional arguments:
-            subparsers_config -- the configuration dict for the current subparser
-            parent_parser     -- the parent object to add the parsers to.
+            subparsers_config -- configuration dict for the current subparser
+            parent_parser     -- parent object to add the parsers to.
         """
 
         # create subparsers
@@ -68,7 +70,7 @@ class ArgsParser:
         Positional arguments:
             arguments -- a list of strings representing arguments
         Return value:
-            a dictionary with the result of argparse.ArgumentParser.parse_args()
+            a dictionary with the result of argparse.ArgumentParser.parse_args
         """
 
         args = self.parser.parse_args(arguments)
@@ -76,19 +78,20 @@ class ArgsParser:
 
 
 class Command:
-    def __init__(self, cmd, actions):
+    def __init__(self, cmd, actions, data):
         self._cmd = cmd
         self._actions = actions
+        self._data = data
 
     def __repr__(self):
-        return f"cmd: {self._cmd} actions: {self._actions}"
+        return f"cmd: {self._cmd} actions: {self._actions} data: {self._data}"
 
 
 class CommandProcessor:
     def __init__(self):
         pass
 
-    def process(self, cmd, data):
+    def process(self, cmd):
         """Execute a list of actions from
         a given command in sequential order.
 
@@ -98,11 +101,11 @@ class CommandProcessor:
         """
 
         for action in cmd._actions:
-            action().exec(data)
+            action().exec(cmd._data)
 
 
 SUPPORTED_CMDS = {
-    ADD_CMD: [],
+    ADD_CMD: [CreateTransaction, SaveTransaction],
     REMOVE_CMD: [],
     LIST_CMD: [],
     SHOW_CMD: [],
@@ -120,8 +123,8 @@ class CLI:
         """Load configuration from json file and
         initialize args parser object.
         """
-
-        cli_cfg_path = pathlib.Path(__file__).parent.joinpath(CLI_CFG_FILE).resolve()
+        BASE_DIR = pathlib.Path(__file__).parent
+        cli_cfg_path = BASE_DIR.joinpath(CLI_CFG_FILE).resolve()
         with cli_cfg_path.open() as f:
             self._cli_cfg = json.loads(f.read())
 
@@ -136,21 +139,23 @@ class CLI:
 
         return self._args_parser.parse(args)
 
-    def create_cmd(self, cmd_id):
+    def create_cmd(self, args):
         """Create a Command object from given cmd id.
 
         Raise UnsupportedCmdError if cmd_id contains an invalid value.
 
         Args:
-            cmd_id (str): Command id
+            args (dict): Parsed cli arguments.
         """
 
         try:
+            cmd_id = args[CLI_CMD]
+            # cmd data consists of all key-values in args except cmd id
+            cmd_data = {k: args[k] for k in args.keys() - {CLI_CMD}}
             cmd_actions = SUPPORTED_CMDS[cmd_id]
-            return Command(cmd_id, cmd_actions)
+            return Command(cmd_id, cmd_actions, cmd_data)
         except KeyError as e:
             raise UnsupportedCmdError(f"Unsupported command: {e}")
-
 
     def run(self, args):
         """Main cli method that starts by parsing
@@ -163,8 +168,8 @@ class CLI:
 
         try:
             parsed_args = self.parse_args(args)
-            cmd = self.create_cmd(parsed_args[CLI_CMD])
-            cmd.process(parsed_args)
+            cmd = self.create_cmd(parsed_args)
+            self._cmd_processor.process(cmd)
         except Exception as e:
             print(e)
             sys.exit(1)
