@@ -1,5 +1,6 @@
 import unittest
 import fintool.cli
+import fintool.actions
 
 
 class TestCLI(unittest.TestCase):
@@ -125,42 +126,37 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_create_add_cmd(self):
-        expected = fintool.cli.Command("add", [])
-        actual = fintool.cli.CLI().create_cmd("add")
+        expected_actions = [
+            fintool.actions.CreateTransaction,
+            fintool.actions.SaveTransaction
+        ]
+        expected_cmd = fintool.cli.Command("add", expected_actions, None)
+        args = {'cmd': 'add', 'other': None}
+        actual = fintool.cli.CLI().create_cmd(args)
 
-        self.assertEqual(actual._cmd, expected._cmd)
-        self.assertEqual(actual._actions, expected._actions)
+        self.assertEqual(actual._cmd, expected_cmd._cmd)
+        self.assertEqual(actual._actions, expected_cmd._actions)
 
+    @unittest.skip("not implemented")
     def test_create_remove_cmd(self):
-        expected = fintool.cli.Command("remove", [])
-        actual = fintool.cli.CLI().create_cmd("remove")
+        pass  # TODO
 
-        self.assertEqual(actual._cmd, expected._cmd)
-        self.assertEqual(actual._actions, expected._actions)
-
+    @unittest.skip("not implemented")
     def test_create_list_cmd(self):
-        expected = fintool.cli.Command("list", [])
-        actual = fintool.cli.CLI().create_cmd("list")
+        pass  # TODO
 
-        self.assertEqual(actual._cmd, expected._cmd)
-        self.assertEqual(actual._actions, expected._actions)
-
+    @unittest.skip("not implemented")
     def test_create_show_cmd(self):
-        expected = fintool.cli.Command("show", [])
-        actual = fintool.cli.CLI().create_cmd("show")
+        pass  # TODO
 
-        self.assertEqual(actual._cmd, expected._cmd)
-        self.assertEqual(actual._actions, expected._actions)
-
+    @unittest.skip("not implemented")
     def test_create_edit_cmd(self):
-        expected = fintool.cli.Command("edit", [])
-        actual = fintool.cli.CLI().create_cmd("edit")
+        pass  # TODO
 
-        self.assertEqual(actual._cmd, expected._cmd)
-        self.assertEqual(actual._actions, expected._actions)
-
+    @unittest.skip("not implemented")
     def test_execute_cmd(self):
         pass  # TODO
 
+    @unittest.skip("not implemented")
     def test_init(self):
         pass  # TODO
