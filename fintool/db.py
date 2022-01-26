@@ -13,6 +13,8 @@ Supported clients:
 import csv
 import pathlib
 
+from fintool.logging import LoggingHelper
+
 
 class UnsupportedDbTypeError(Exception):
     """User defined error to be raised when a client
@@ -73,6 +75,7 @@ class CsvDb(AbstractDb):
     RECORDS_FILE_TMP = 'records.csv.tmp'
 
     def __init__(self, homedir=HOMEDIR):
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         # create home dir
         self._homedir_path = pathlib.Path(homedir).expanduser()
         self._homedir_path.mkdir(parents=True, exist_ok=True)
@@ -89,6 +92,7 @@ class CsvDb(AbstractDb):
         Args:
             record (dict): A dictionary representing the new record.
         """
+        self._logger.debug(f'adding record to csv db {record}')
         file_exists = self._records_file.is_file()
         with self._records_file.open('a', newline='') as csvfile:
             field_names = record.keys()
@@ -105,6 +109,7 @@ class CsvDb(AbstractDb):
             id_field (str): A string representing record's id field
             id_value (str): A string representing record's id value
         """
+        self._logger.debug(f'removing record with id {id_value} from csv db')
         with self._records_file.open('r', newline='') as records_csv_file:
             # create reader and get field names
             reader = csv.DictReader(records_csv_file)
@@ -130,6 +135,7 @@ class CsvDb(AbstractDb):
         Args:
             filters (dict): a dictionary mapping keys with target values.
         """
+        self._logger.debug(f'getting records from db with filters = {filters}')
         with self._records_file.open('r', newline='') as csvfile:
             result = []
             reader = csv.DictReader(csvfile)
@@ -158,6 +164,7 @@ class CsvDb(AbstractDb):
             id_value (str): A string representing the value of id field
             new_record (dict): A dictionary representing the new set of values
         """
+        self._logger.debug(f'updating record {id_value} with {new_record}')
         with self._records_file.open('r', newline='') as records_csv_file:
             # create reader and get field names
             reader = csv.DictReader(records_csv_file)

@@ -7,6 +7,7 @@ import uuid
 import datetime
 
 from fintool.db import DbFactory
+from fintool.logging import LoggingHelper
 
 
 class Error(Exception):
@@ -88,6 +89,15 @@ class Transaction:
 class TransactionManager:
     @classmethod
     def create_transaction(cls, data):
+        """Create a trnasaction from a dictionary instance.
+
+        Args:
+            data (dict): A dictionary with values for new transaction.
+        """
+        LoggingHelper.get_logger(cls.__name__).debug(
+            f'creating new transaction with {data}'
+        )
+
         try:
             return Transaction(
                 data[F_TYPE],
@@ -100,7 +110,15 @@ class TransactionManager:
 
     @classmethod
     def save_transaction(cls, transaction):
+        """Save a transaction in db.
+
+        Args:
+            transaction (Transaction): object to be saved in db
+        """
         # TODO: need to get db type from cfg
         # TODO: need to inject db object so that we can test with mock data
+        LoggingHelper.get_logger(cls.__name__).debug(
+            'saving transaction in db'
+        )
         fintool_db = DbFactory.get_db('csv')()
         fintool_db.add_record(record=transaction.serialize())

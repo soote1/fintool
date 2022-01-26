@@ -1,9 +1,11 @@
+import os
 import sys
 import json
 import pathlib
 import argparse
 
 from fintool.actions import CreateTransaction, SaveTransaction
+from fintool.logging import LoggingHelper
 
 
 SUBPARSERS = 'subparsers'
@@ -30,7 +32,8 @@ class ArgsParser:
 
     def __init__(self, config):
         """Initialize instance with given config."""
-
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        self._logger.debug('setting up parser helper')
         self.load_parsers(config)
 
     def load_parsers(self, config):
@@ -72,7 +75,7 @@ class ArgsParser:
         Return value:
             a dictionary with the result of argparse.ArgumentParser.parse_args
         """
-
+        self._logger.debug(f'parsing arguments {arguments}')
         args = self.parser.parse_args(arguments)
         return vars(args)
 
@@ -89,7 +92,7 @@ class Command:
 
 class CommandProcessor:
     def __init__(self):
-        pass
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
 
     def process(self, cmd):
         """Execute a list of actions from
@@ -99,7 +102,7 @@ class CommandProcessor:
             cmd (Command): The command to be processed
             data (list): The list of associated actions
         """
-
+        self._logger.debug(f'processing cmd: {cmd}')
         for action in cmd._actions:
             action().exec(cmd._data)
 
@@ -123,8 +126,13 @@ class CLI:
         """Load configuration from json file and
         initialize args parser object.
         """
+        # get log level from env var or set info as default
+        LoggingHelper.set_log_level(os.getenv('FINTOOL_LOGLEVEL', 'info'))
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+
         BASE_DIR = pathlib.Path(__file__).parent
         cli_cfg_path = BASE_DIR.joinpath(CLI_CFG_FILE).resolve()
+        self._logger.debug(f'loading cli config from {cli_cfg_path}')
         with cli_cfg_path.open() as f:
             self._cli_cfg = json.loads(f.read())
 
@@ -136,7 +144,7 @@ class CLI:
         Use arguments parser object to parse args and
         return result object.
         """
-
+        self._logger.debug(f'parsing arguments: {args}')
         return self._args_parser.parse(args)
 
     def create_cmd(self, args):
@@ -147,7 +155,7 @@ class CLI:
         Args:
             args (dict): Parsed cli arguments.
         """
-
+        self._logger.debug(f'creating command from args: {args}')
         try:
             cmd_id = args[CLI_CMD]
             # cmd data consists of all key-values in args except cmd id
@@ -165,13 +173,13 @@ class CLI:
         Args:
             args (list): A list of cli arguments
         """
-
+        self._logger.debug(f'running cli with: {args}')
         try:
             parsed_args = self.parse_args(args)
             cmd = self.create_cmd(parsed_args)
             self._cmd_processor.process(cmd)
         except Exception as e:
-            print(e)
+            self._logger.error(f'an error ocurred while running command: {e}')
             sys.exit(1)
 
 
