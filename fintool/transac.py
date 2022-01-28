@@ -89,7 +89,7 @@ class Transaction:
 class TransactionManager:
     @classmethod
     def create_transaction(cls, data):
-        """Create a trnasaction from a dictionary instance.
+        """Create a transaction from a dictionary instance.
 
         Args:
             data (dict): A dictionary with values for new transaction.
@@ -122,3 +122,13 @@ class TransactionManager:
         )
         fintool_db = DbFactory.get_db('csv')()
         fintool_db.add_record(record=transaction.serialize())
+
+    @classmethod
+    def get_transactions(cls, filters=None):
+        """Get transactions from db using a set of filters.
+        """
+        LoggingHelper.get_logger(cls.__name__).debug(
+            'getting transactions from db using filters = {filters}'
+        )
+        db = DbFactory.get_db('csv')()
+        return db.get_records(filters)
