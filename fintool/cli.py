@@ -4,7 +4,13 @@ import json
 import pathlib
 import argparse
 
-from fintool.actions import CreateTransaction, SaveTransaction
+from fintool.actions import (
+    CreateTransaction,
+    SaveTransaction,
+    CreateFilters,
+    GetTransactions,
+    PrintTransactions,
+)
 from fintool.logging import LoggingHelper
 
 
@@ -109,8 +115,8 @@ class CommandProcessor:
 
 SUPPORTED_CMDS = {
     ADD_CMD: [CreateTransaction, SaveTransaction],
-    REMOVE_CMD: [],
-    LIST_CMD: [],
+    REMOVE_CMD:[],
+    LIST_CMD: [CreateFilters, GetTransactions, PrintTransactions],
     SHOW_CMD: [],
     EDIT_CMD: [],
 }
