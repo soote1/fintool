@@ -63,3 +63,65 @@ class SaveTransaction(Action):
             TransactionManager.save_transaction(data["transaction"])
         except KeyError:
             raise ActionError("Missing input value: transaction")
+
+
+class CreateFilters(Action):
+    """Convert cli options into filters dictionary.
+    """
+    def __init__(self):
+        self.TYPE = 'type'
+        self.DATE = 'date'
+        self.AMOUNT = 'amount'
+        self.TAGS = 'tags'
+        self.FILTERS = 'filters'
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+
+    def exec(self, data):
+        """Create a dictionary with filters from cli options.
+        """
+        self._logger.debug('running action with: {data}')
+        filters = {}
+        if data[self.TYPE]:
+            filters[self.TYPE] = data[self.TYPE]
+
+        if data[self.DATE]:
+            filters[self.DATE] = data[self.DATE]
+
+        if data[self.AMOUNT]:
+            filters[self.AMOUNT] = data[self.AMOUNT]
+
+        if data[self.TAGS]:
+            filters[self.TAGS] = f"{data[self.TAGS].split(',')}"
+
+        if filters:
+            data[self.FILTERS] = filters
+
+
+class GetTransactions(Action):
+    """Retrieve transactions from db using a set of filters.
+    """
+    def __init__(self):
+        self.TRANSACTIONS = 'transactions'
+        self.FILTERS = 'filters'
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+
+    def exec(self, data):
+        """Use TransactionManager to get transactions from db.
+        """
+        self._logger.debug('running action with: {data}')
+        txs = TransactionManager.get_transactions(data.get(self.FILTERS))
+        data[self.TRANSACTIONS] = txs
+
+
+class PrintTransactions(Action):
+    """Print transactions to stdout
+    """
+    def __init__(self):
+        self.TRANSACTIONS = 'transactions'
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+
+    def exec(self, data):
+        """Get transactions from data object and print them to stdout.
+        """
+        self._logger.debug('running action with: {data}')
+        print(data[self.TRANSACTIONS])
