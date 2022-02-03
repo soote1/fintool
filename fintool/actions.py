@@ -58,7 +58,7 @@ class SaveTransaction(Action):
         Args:
             data (dict): A dictionary containing a transaction.
         """
-        self._logger.debug('running action with: {data}')
+        self._logger.debug(f'running action with: {data}')
         try:
             TransactionManager.save_transaction(data["transaction"])
         except KeyError:
@@ -79,7 +79,7 @@ class CreateFilters(Action):
     def exec(self, data):
         """Create a dictionary with filters from cli options.
         """
-        self._logger.debug('running action with: {data}')
+        self._logger.debug(f'running action with: {data}')
         filters = {}
         if data[self.TYPE]:
             filters[self.TYPE] = data[self.TYPE]
@@ -108,7 +108,7 @@ class GetTransactions(Action):
     def exec(self, data):
         """Use TransactionManager to get transactions from db.
         """
-        self._logger.debug('running action with: {data}')
+        self._logger.debug(f'running action with: {data}')
         txs = TransactionManager.get_transactions(data.get(self.FILTERS))
         data[self.TRANSACTIONS] = txs
 
@@ -123,5 +123,20 @@ class PrintTransactions(Action):
     def exec(self, data):
         """Get transactions from data object and print them to stdout.
         """
-        self._logger.debug('running action with: {data}')
+        self._logger.debug(f'running action with: {data}')
         print(data[self.TRANSACTIONS])
+
+
+class RemoveTransaction(Action):
+    """Remove a transaction from db.
+    """
+    def __init__(self):
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+
+    def exec(self, data):
+        """Get transaction id from data and remove the
+        corresponding transaction from db using TransactionManager.
+        """
+        self._logger.debug(f'running action with {data}')
+
+        TransactionManager.remove_transaction(data)
