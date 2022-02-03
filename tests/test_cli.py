@@ -141,9 +141,19 @@ class TestCLI(unittest.TestCase):
     def test_create_remove_cmd(self):
         pass  # TODO
 
-    @unittest.skip("not implemented")
     def test_create_list_cmd(self):
-        pass  # TODO
+        expected_actions = [
+            fintool.actions.CreateFilters,
+            fintool.actions.GetTransactions,
+            fintool.actions.PrintTransactions
+        ]
+
+        expected_cmd = fintool.cli.Command("list", expected_actions, None)
+        args = {'cmd': 'list', 'other': None}
+        actual = fintool.cli.CLI().create_cmd(args)
+
+        self.assertEqual(actual._cmd, expected_cmd._cmd)
+        self.assertEqual(actual._actions, expected_cmd._actions)
 
     @unittest.skip("not implemented")
     def test_create_show_cmd(self):

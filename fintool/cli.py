@@ -115,7 +115,7 @@ class CommandProcessor:
 
 SUPPORTED_CMDS = {
     ADD_CMD: [CreateTransaction, SaveTransaction],
-    REMOVE_CMD:[],
+    REMOVE_CMD: [],
     LIST_CMD: [CreateFilters, GetTransactions, PrintTransactions],
     SHOW_CMD: [],
     EDIT_CMD: [],
