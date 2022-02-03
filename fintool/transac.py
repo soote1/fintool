@@ -132,3 +132,19 @@ class TransactionManager:
         )
         db = DbFactory.get_db('csv')()
         return db.get_records(filters)
+
+    @classmethod
+    def remove_transaction(cls, data):
+        """Make sure that data contains a value for id field and use it
+        to remove a transaction from db.
+        """
+        try:
+            id_value = data[F_ID]
+        except KeyError as e:
+            raise MissingFieldError(f'invalid name {e} for field {F_ID}')
+
+        LoggingHelper.get_logger(cls.__name__).debug(
+            'removing transaction {} from db'
+        )
+        db = DbFactory.get_db('csv')()
+        db.remove_record(F_ID, id_value)
