@@ -1,11 +1,25 @@
+import pathlib
 import unittest
 
-import fintool.transac
+from fintool.transac import TransactionManager
 
 
 class TestTransactions(unittest.TestCase):
     """Test transactions module.
     """
+    @classmethod
+    def setUpClass(cls):
+        cls.DB_DIR = pathlib.Path('~/.fintool').expanduser()
+        cls.RECORDS_FILE = cls.DB_DIR.joinpath("records.csv")
+
+    def setUp(self):
+        try:
+            for f in self.DB_DIR.glob("*"):
+                f.unlink()
+
+            self.DB_DIR.rmdir()
+        except FileNotFoundError:
+            pass  # db doesn't exists
 
     def test_create_transaction(self):
         expected = {
@@ -15,7 +29,7 @@ class TestTransactions(unittest.TestCase):
             'tags': ['a', 'b', 'c']
         }
 
-        actual = fintool.transac.TransactionManager.create_transaction({
+        actual = TransactionManager.create_transaction({
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
@@ -34,11 +48,54 @@ class TestTransactions(unittest.TestCase):
         other tests already validate db contents.
         """
 
-        actual = fintool.transac.TransactionManager.create_transaction({
+        actual = TransactionManager.create_transaction({
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
             'tags': 'a,b,c'
         })
 
-        fintool.transac.TransactionManager.save_transaction(actual)
+        TransactionManager.save_transaction(actual)
+
+    def test_get_transactions(self):
+        expected = [
+            {
+                'id': '',
+                'type': 'income',
+                'date': '2022-01-01',
+                'amount': '12.3',
+                'tags': "['a', 'b', 'c']"
+            },
+            {
+                'id': '',
+                'type': 'income',
+                'date': '2022-01-01',
+                'amount': '12.3',
+                'tags': "['a', 'b', 'c']"
+            }
+        ]
+        TransactionManager.save_transaction(
+            TransactionManager.create_transaction({
+                'type': 'income',
+                'date': '2022-01-01',
+                'amount': '12.3',
+                'tags': 'a,b,c'
+            })
+        )
+        TransactionManager.save_transaction(
+            TransactionManager.create_transaction({
+                'type': 'income',
+                'date': '2022-01-01',
+                'amount': '12.3',
+                'tags': 'a,b,c'
+            })
+        )
+        actual = TransactionManager.get_transactions()
+
+        # compare everything but id
+        for i in range(len(expected)):
+            self.assertEqual(
+                {k: actual[i][k] for k in actual[i].keys() - {'id'}},
+                {k: expected[i][k] for k in expected[i].keys() - {'id'}},
+                "transaction not equal"
+            )
