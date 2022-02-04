@@ -99,3 +99,20 @@ class TestTransactions(unittest.TestCase):
                 {k: expected[i][k] for k in expected[i].keys() - {'id'}},
                 "transaction not equal"
             )
+
+    def test_remove_transaction(self):
+        expected = []
+
+        TransactionManager.save_transaction(
+            TransactionManager.create_transaction({
+                'type': 'income',
+                'date': '2022-01-01',
+                'amount': '12.3',
+                'tags': 'a,b,c'
+            })
+        )
+        actual = TransactionManager.get_transactions()
+        TransactionManager.remove_transaction({'id': actual[0]['id']})
+        actual = TransactionManager.get_transactions()
+
+        self.assertEqual(actual, expected, "transaction list not equal")
