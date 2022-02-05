@@ -140,3 +140,21 @@ class RemoveTransaction(Action):
         self._logger.debug(f'running action with {data}')
 
         TransactionManager.remove_transaction(data)
+
+
+class UpdateTransaction(Action):
+    """Update a transaction in db with new values.
+    """
+
+    def __init__(self):
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+
+    def exec(self, data):
+        """Get transaction from data and trigger update operation using
+        TransactionManager.
+        """
+        self._logger.debug(f'running action with {data}')
+        try:
+            TransactionManager.update_transaction(data['transaction'])
+        except KeyError:
+            raise ActionError('Missing input value: transaction')

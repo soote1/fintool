@@ -24,6 +24,10 @@ class InvalidFieldValueError(Error):
     pass
 
 
+class InvalidTransactionError(Error):
+    pass
+
+
 F_ID = 'id'
 F_TYPE = 'type'
 F_TAGS = 'tags'
@@ -99,7 +103,7 @@ class TransactionManager:
         )
 
         try:
-            return Transaction(
+            transaction = Transaction(
                 data[F_TYPE],
                 data[F_TAGS],
                 data[F_DATE],
@@ -107,6 +111,12 @@ class TransactionManager:
             )
         except KeyError as e:
             raise MissingFieldError(e)
+
+        # keep id if was provided in data
+        if F_ID in data:
+            transaction._id = data[F_ID]
+
+        return transaction
 
     @classmethod
     def save_transaction(cls, transaction):
@@ -140,11 +150,24 @@ class TransactionManager:
         """
         try:
             id_value = data[F_ID]
-        except KeyError as e:
-            raise MissingFieldError(f'invalid name {e} for field {F_ID}')
+        except KeyError:
+            raise MissingFieldError(f'missing field {F_ID}')
 
         LoggingHelper.get_logger(cls.__name__).debug(
-            'removing transaction {} from db'
+            f'removing transaction {id_value}'
         )
         db = DbFactory.get_db('csv')()
         db.remove_record(F_ID, id_value)
+
+    @classmethod
+    def update_transaction(cls, data):
+        """Update a transaction in db by using the provided id and data.
+        """
+        if isinstance(data, Transaction):
+            LoggingHelper.get_logger(cls.__name__).debug(
+                f'updating transaction {data._id} with {data}'
+            )
+            db = DbFactory.get_db('csv')()
+            db.edit_record(F_ID, data._id, data.serialize())
+        else:
+            raise InvalidTransactionError('invalid transaction object')
