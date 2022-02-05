@@ -10,7 +10,8 @@ from fintool.actions import (
     CreateFilters,
     GetTransactions,
     PrintTransactions,
-    RemoveTransaction
+    RemoveTransaction,
+    UpdateTransaction
 )
 from fintool.logging import LoggingHelper
 
@@ -119,7 +120,7 @@ SUPPORTED_CMDS = {
     REMOVE_CMD: [RemoveTransaction],
     LIST_CMD: [CreateFilters, GetTransactions, PrintTransactions],
     SHOW_CMD: [],
-    EDIT_CMD: [],
+    EDIT_CMD: [CreateTransaction, UpdateTransaction],
 }
 
 
