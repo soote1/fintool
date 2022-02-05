@@ -116,3 +116,38 @@ class TestTransactions(unittest.TestCase):
         actual = TransactionManager.get_transactions()
 
         self.assertEqual(actual, expected, "transaction list not equal")
+
+    def test_edit_transaction(self):
+        expected = [
+            {
+                'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
+                'type': 'income',
+                'date': '2022-01-01',
+                'amount': '12.3',
+                'tags': "['a', 'b', 'c']"
+            }
+        ]
+
+        TransactionManager.save_transaction(
+            TransactionManager.create_transaction({
+                'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
+                'type': 'outcome',
+                'date': '2022-02-02',
+                'amount': '12.3',
+                'tags': "1,2,3"
+            })
+        )
+
+        TransactionManager.update_transaction(
+            TransactionManager.create_transaction({
+                'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
+                'type': 'income',
+                'date': '2022-01-01',
+                'amount': '12.3',
+                'tags': "a,b,c"
+            })
+        )
+
+        actual = TransactionManager.get_transactions()
+
+        self.assertEqual(actual, expected, "transactions not equal")
