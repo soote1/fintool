@@ -124,7 +124,8 @@ class PrintTransactions(Action):
         """Get transactions from data object and print them to stdout.
         """
         self._logger.debug(f'running action with: {data}')
-        print(data[self.TRANSACTIONS])
+        for transaction in data[self.TRANSACTIONS]:
+            print(transaction)
 
 
 class RemoveTransaction(Action):
