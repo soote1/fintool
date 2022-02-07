@@ -37,17 +37,19 @@ SUPPORTED_TYPES = {'income', 'outcome'}
 
 
 class Transaction:
-    def __init__(self, t_type, t_tags, t_date, t_amount):
+    def __init__(self, t_type, t_tags, t_date, t_amount, t_id=None):
         """Do input validation on arguments and initialize fields.
 
         Raise InvalidFieldValueError if argument is not expected or has
         invalid format.
 
         Args:
-            t_type ():
-            t_tags ():
-            t_date ():
-            t_amount ():
+            t_id (str):         a guid
+            t_type (str):       transaction type (income/outcome)
+            t_tags (str):       a | separated list of words
+            t_date (str):       a date with YYYY-MM-DD format
+            t_amount (float):   a floating point number representing
+                                the exchanged amount
         """
         if t_type in SUPPORTED_TYPES:
             self._type = t_type
@@ -57,8 +59,7 @@ class Transaction:
             )
 
         try:
-            tags_list = t_tags.split(",")
-            self._tags = tags_list  # TODO: convert list to set
+            self._tags = set(t_tags.split('|'))
         except AttributeError:
             raise InvalidFieldValueError(
                 f'Invalid value {t_tags} for transaction tags'
@@ -78,7 +79,8 @@ class Transaction:
             raise InvalidFieldValueError(
                 f"Invalid value {t_amount} for transaction amount"
             )
-        self._id = uuid.uuid4().hex
+
+        self._id = t_id if t_id else uuid.uuid4().hex
 
     def serialize(self):
         return {
@@ -86,8 +88,11 @@ class Transaction:
             F_TYPE: self._type,
             F_DATE: self._date,
             F_AMOUNT: self._amount,
-            F_TAGS: self._tags
+            F_TAGS: '|'.join(self._tags)
         }
+
+    def __repr__(self):
+        return f'{self._id}\t{self._date}\t{self._type}\t{self._amount}\t{self._tags}'
 
 
 class TransactionManager:
@@ -107,7 +112,8 @@ class TransactionManager:
                 data[F_TYPE],
                 data[F_TAGS],
                 data[F_DATE],
-                data[F_AMOUNT]
+                data[F_AMOUNT],
+                data[F_ID] if F_ID in data else None
             )
         except KeyError as e:
             raise MissingFieldError(e)
@@ -117,6 +123,14 @@ class TransactionManager:
             transaction._id = data[F_ID]
 
         return transaction
+
+    @classmethod
+    def create_transaction_list(cls, dicts):
+        transactions = []
+        for d in dicts:
+            transactions.append(cls.create_transaction(d))
+
+        return transactions
 
     @classmethod
     def save_transaction(cls, transaction):
@@ -141,7 +155,7 @@ class TransactionManager:
             'getting transactions from db using filters = {filters}'
         )
         db = DbFactory.get_db('csv')()
-        return db.get_records(filters)
+        return cls.create_transaction_list(db.get_records(filters))
 
     @classmethod
     def remove_transaction(cls, data):

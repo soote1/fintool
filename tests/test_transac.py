@@ -26,14 +26,14 @@ class TestTransactions(unittest.TestCase):
             'type': 'income',
             'date': '2022-01-01',
             'amount': 12.3,
-            'tags': ['a', 'b', 'c']
+            'tags': {'a', 'b', 'c'}
         }
 
         actual = TransactionManager.create_transaction({
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
-            'tags': 'a,b,c'
+            'tags': 'a|b|c'
         })
 
         # compare everything but id since it is uuid
@@ -52,42 +52,42 @@ class TestTransactions(unittest.TestCase):
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
-            'tags': 'a,b,c'
+            'tags': 'a|b|c'
         })
 
         TransactionManager.save_transaction(actual)
 
     def test_get_transactions(self):
         expected = [
-            {
+            TransactionManager.create_transaction({
                 'id': '',
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
-                'tags': "['a', 'b', 'c']"
-            },
-            {
+                'tags': 'a|b|c'
+            }),
+            TransactionManager.create_transaction({
                 'id': '',
                 'type': 'income',
-                'date': '2022-01-01',
-                'amount': '12.3',
-                'tags': "['a', 'b', 'c']"
-            }
+                'date': '2023-01-01',
+                'amount': '121.3',
+                'tags': 'd|e|f'
+            })
         ]
         TransactionManager.save_transaction(
             TransactionManager.create_transaction({
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
-                'tags': 'a,b,c'
+                'tags': 'a|b|c'
             })
         )
         TransactionManager.save_transaction(
             TransactionManager.create_transaction({
                 'type': 'income',
-                'date': '2022-01-01',
-                'amount': '12.3',
-                'tags': 'a,b,c'
+                'date': '2023-01-01',
+                'amount': '121.3',
+                'tags': 'd|e|f'
             })
         )
         actual = TransactionManager.get_transactions()
@@ -95,9 +95,27 @@ class TestTransactions(unittest.TestCase):
         # compare everything but id
         for i in range(len(expected)):
             self.assertEqual(
-                {k: actual[i][k] for k in actual[i].keys() - {'id'}},
-                {k: expected[i][k] for k in expected[i].keys() - {'id'}},
-                "transaction not equal"
+                actual[i]._type,
+                expected[i]._type,
+                "transaction type not equal"
+            )
+
+            self.assertEqual(
+                actual[i]._date,
+                expected[i]._date,
+                "transaction date not equal"
+            )
+
+            self.assertEqual(
+                actual[i]._amount,
+                expected[i]._amount,
+                "transaction amount not equal"
+            )
+
+            self.assertEqual(
+                actual[i]._tags,
+                expected[i]._tags,
+                "transaction tags not equal"
             )
 
     def test_remove_transaction(self):
@@ -108,24 +126,24 @@ class TestTransactions(unittest.TestCase):
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
-                'tags': 'a,b,c'
+                'tags': 'a|b|c'
             })
         )
         actual = TransactionManager.get_transactions()
-        TransactionManager.remove_transaction({'id': actual[0]['id']})
+        TransactionManager.remove_transaction({'id': actual[0]._id})
         actual = TransactionManager.get_transactions()
 
         self.assertEqual(actual, expected, "transaction list not equal")
 
     def test_edit_transaction(self):
         expected = [
-            {
+            TransactionManager.create_transaction({
                 'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
-                'tags': "['a', 'b', 'c']"
-            }
+                'tags': 'a|b|c'
+            })
         ]
 
         TransactionManager.save_transaction(
@@ -134,7 +152,7 @@ class TestTransactions(unittest.TestCase):
                 'type': 'outcome',
                 'date': '2022-02-02',
                 'amount': '12.3',
-                'tags': "1,2,3"
+                'tags': '1|2|3'
             })
         )
 
@@ -144,10 +162,32 @@ class TestTransactions(unittest.TestCase):
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
-                'tags': "a,b,c"
+                'tags': 'a|b|c'
             })
         )
 
         actual = TransactionManager.get_transactions()
 
-        self.assertEqual(actual, expected, "transactions not equal")
+        self.assertEqual(
+            actual[0]._type,
+            expected[0]._type,
+            "transaction type not equal"
+        )
+
+        self.assertEqual(
+            actual[0]._date,
+            expected[0]._date,
+            "transaction date not equal"
+        )
+
+        self.assertEqual(
+            actual[0]._amount,
+            expected[0]._amount,
+            "transaction amount not equal"
+        )
+
+        self.assertEqual(
+            actual[0]._tags,
+            expected[0]._tags,
+            "transaction tags not equal"
+        )
