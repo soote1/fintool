@@ -129,30 +129,19 @@ class CsvDb(AbstractDb):
         # replace original csv with tmp file
         pathlib.Path(self._records_file_tmp).replace(self._records_file)
 
-    def get_records(self, filters=None):
+    def get_records(self):
         """Return records from csv file that matches any filter in filters
 
         Args:
             filters (dict): a dictionary mapping keys with target values.
         """
-        self._logger.debug(f'getting records from db with filters = {filters}')
+        self._logger.debug(f'getting records from db')
         with self._records_file.open('r', newline='') as csvfile:
             result = []
             reader = csv.DictReader(csvfile)
 
             for row in reader:
-                # filter records if filters is not None
-                if filters:
-                    for key, values in filters.items():
-                        if key in row:
-                            for value in values:
-                                # add row if matches any value and stop loop
-                                if row[key] == value:
-                                    result.append(row)
-                                    break
-                # otherwise add all records
-                else:
-                    result.append(row)
+                result.append(row)
 
             return result
 
