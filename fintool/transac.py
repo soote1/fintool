@@ -82,6 +82,14 @@ class Transaction:
 
         self._id = t_id if t_id else uuid.uuid4().hex
 
+        self._fields = {
+            F_ID: self._id,
+            F_TYPE: self._type,
+            F_DATE: self._date,
+            F_AMOUNT: self._amount,
+            F_TAGS: self._tags
+        }
+
     def serialize(self):
         return {
             F_ID: self._id,
@@ -90,6 +98,12 @@ class Transaction:
             F_AMOUNT: self._amount,
             F_TAGS: '|'.join(self._tags)
         }
+
+    def has_field(self, k):
+        return k in self._fields
+
+    def get_value(self, k):
+        return self._fields[k]
 
     def __repr__(self):
         return f'{self._id}\t{self._date}\t{self._type}\t{self._amount}\t{self._tags}'
@@ -155,7 +169,28 @@ class TransactionManager:
             'getting transactions from db using filters = {filters}'
         )
         db = DbFactory.get_db('csv')()
-        return cls.create_transaction_list(db.get_records(filters))
+        transactions = cls.create_transaction_list(db.get_records())
+
+        if filters:
+            filtered_transactions = []
+            # keep transactions matching any filter value only
+            for k, v in filters.items():
+                for t in transactions:
+                    try:
+                        if k == F_TAGS:
+                            # add transaction if any tag matches
+                            if v & t._tags:
+                                filtered_transactions.append(t)
+                        else:
+                            # add transaction if field matches filter value
+                            if v == t.get_value(k):
+                                filtered_transactions.append(t)
+                    except KeyError:
+                        pass  # no problem, field doesn't exists
+
+            return filtered_transactions
+
+        return transactions
 
     @classmethod
     def remove_transaction(cls, data):

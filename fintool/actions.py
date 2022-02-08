@@ -91,7 +91,7 @@ class CreateFilters(Action):
             filters[self.AMOUNT] = data[self.AMOUNT]
 
         if data[self.TAGS]:
-            filters[self.TAGS] = f"{data[self.TAGS].split(',')}"
+            filters[self.TAGS] = set(data[self.TAGS].split('|'))
 
         if filters:
             data[self.FILTERS] = filters
