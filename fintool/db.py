@@ -29,7 +29,7 @@ class DbFactory:
     """
 
     @classmethod
-    def get_db(cls, type):
+    def get_db(cls, db_type):
         """Return a db object matching type
         argument.
 
@@ -41,7 +41,7 @@ class DbFactory:
         """
 
         try:
-            return SUPPORTED_TYPES[type]
+            return SUPPORTED_TYPES[db_type]
         except KeyError as e:
             raise UnsupportedDbTypeError("Db type not supported: %s", e)
 
@@ -54,9 +54,6 @@ class AbstractDb:
         pass
 
     def remove_record(self, id_field, id_value):
-        pass
-
-    def get_record(self, filter):
         pass
 
     def get_records(self):
