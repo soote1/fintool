@@ -30,6 +30,7 @@ class CreateTransaction(Action):
 
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Create a Transaction object and insert it into data.
@@ -51,6 +52,7 @@ class SaveTransaction(Action):
 
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Retrieve a transaction from data, serialize it and save it in fintool db.
@@ -75,6 +77,7 @@ class CreateFilters(Action):
         self.TAGS = 'tags'
         self.FILTERS = 'filters'
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Create a dictionary with filters from cli options.
@@ -104,6 +107,7 @@ class GetTransactions(Action):
         self.TRANSACTIONS = 'transactions'
         self.FILTERS = 'filters'
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Use TransactionManager to get transactions from db.
@@ -119,6 +123,7 @@ class PrintTransactions(Action):
     def __init__(self):
         self.TRANSACTIONS = 'transactions'
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Get transactions from data object and print them to stdout.
@@ -133,6 +138,7 @@ class RemoveTransaction(Action):
     """
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Get transaction id from data and remove the
@@ -149,6 +155,7 @@ class UpdateTransaction(Action):
 
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Get transaction from data and trigger update operation using
