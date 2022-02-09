@@ -10,6 +10,15 @@ import logging
 import sys
 
 
+class Error(Exception):
+    """Base error class for this module.
+    """
+
+
+class InvalidValueError(Exception):
+    pass
+
+
 # TODO: add file handler
 # TODO: config logging from file
 class LoggingHelper:
@@ -32,8 +41,7 @@ class LoggingHelper:
         elif log_level == 'critical':
             cls.LOG_LEVEL = logging.CRITICAL
         else:
-            raise InvalidValue(f'Unsupported log level {log_level}')
-
+            raise InvalidValueError(f'Unsupported log level {log_level}')
 
     @classmethod
     def get_console_handler(cls):
