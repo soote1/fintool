@@ -43,7 +43,7 @@ class DbFactory:
         try:
             return SUPPORTED_TYPES[type]
         except KeyError as e:
-            raise UnsupportedDbTypeError(f"Db type not supported: {e}")
+            raise UnsupportedDbTypeError("Db type not supported: %s", e)
 
 
 class AbstractDb:
@@ -92,7 +92,7 @@ class CsvDb(AbstractDb):
         Args:
             record (dict): A dictionary representing the new record.
         """
-        self._logger.debug(f'adding record to csv db {record}')
+        self._logger.debug('adding record to csv db %s', record)
         file_exists = self._records_file.is_file()
         with self._records_file.open('a', newline='') as csvfile:
             field_names = record.keys()
@@ -109,7 +109,7 @@ class CsvDb(AbstractDb):
             id_field (str): A string representing record's id field
             id_value (str): A string representing record's id value
         """
-        self._logger.debug(f'removing record with id {id_value} from csv db')
+        self._logger.debug('removing record with id %s from csv db', id_value)
         with self._records_file.open('r', newline='') as records_csv_file:
             # create reader and get field names
             reader = csv.DictReader(records_csv_file)
@@ -135,7 +135,7 @@ class CsvDb(AbstractDb):
         Args:
             filters (dict): a dictionary mapping keys with target values.
         """
-        self._logger.debug(f'getting records from db')
+        self._logger.debug('getting records from db')
         with self._records_file.open('r', newline='') as csvfile:
             result = []
             reader = csv.DictReader(csvfile)
@@ -153,7 +153,7 @@ class CsvDb(AbstractDb):
             id_value (str): A string representing the value of id field
             new_record (dict): A dictionary representing the new set of values
         """
-        self._logger.debug(f'updating record {id_value} with {new_record}')
+        self._logger.debug('updating record %s with %s', id_value, new_record)
         with self._records_file.open('r', newline='') as records_csv_file:
             # create reader and get field names
             reader = csv.DictReader(records_csv_file)

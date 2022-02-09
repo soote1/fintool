@@ -38,7 +38,7 @@ class CreateTransaction(Action):
             data (dict): A dictionary containing required key-values to create
                             a transaction.
         """
-        self._logger.debug(f'running action with: {data}')
+        self._logger.debug('running action with: %s', data)
         try:
             data["transaction"] = TransactionManager.create_transaction(data)
         except Exception as e:
@@ -58,7 +58,7 @@ class SaveTransaction(Action):
         Args:
             data (dict): A dictionary containing a transaction.
         """
-        self._logger.debug(f'running action with: {data}')
+        self._logger.debug('running action with: %s', data)
         try:
             TransactionManager.save_transaction(data["transaction"])
         except KeyError:
@@ -79,7 +79,7 @@ class CreateFilters(Action):
     def exec(self, data):
         """Create a dictionary with filters from cli options.
         """
-        self._logger.debug(f'running action with: {data}')
+        self._logger.debug('running action with: %s', data)
         filters = {}
         if data[self.TYPE]:
             filters[self.TYPE] = data[self.TYPE]
@@ -108,7 +108,7 @@ class GetTransactions(Action):
     def exec(self, data):
         """Use TransactionManager to get transactions from db.
         """
-        self._logger.debug(f'running action with: {data}')
+        self._logger.debug('running action with: %s', data)
         txs = TransactionManager.get_transactions(data.get(self.FILTERS))
         data[self.TRANSACTIONS] = txs
 
@@ -123,7 +123,7 @@ class PrintTransactions(Action):
     def exec(self, data):
         """Get transactions from data object and print them to stdout.
         """
-        self._logger.debug(f'running action with: {data}')
+        self._logger.debug('running action with: %s', data)
         for transaction in data[self.TRANSACTIONS]:
             print(transaction)
 
@@ -138,7 +138,7 @@ class RemoveTransaction(Action):
         """Get transaction id from data and remove the
         corresponding transaction from db using TransactionManager.
         """
-        self._logger.debug(f'running action with {data}')
+        self._logger.debug('running action with %s', data)
 
         TransactionManager.remove_transaction(data)
 
@@ -154,7 +154,7 @@ class UpdateTransaction(Action):
         """Get transaction from data and trigger update operation using
         TransactionManager.
         """
-        self._logger.debug(f'running action with {data}')
+        self._logger.debug('running action with %s', data)
         try:
             TransactionManager.update_transaction(data['transaction'])
         except KeyError:

@@ -118,7 +118,8 @@ class TransactionManager:
             data (dict): A dictionary with values for new transaction.
         """
         LoggingHelper.get_logger(cls.__name__).debug(
-            f'creating new transaction with {data}'
+            'creating new transaction with %s',
+            data
         )
 
         try:
@@ -166,7 +167,7 @@ class TransactionManager:
         """Get transactions from db using a set of filters.
         """
         LoggingHelper.get_logger(cls.__name__).debug(
-            'getting transactions from db using filters = {filters}'
+            'getting transactions from db using filters = %s', filters
         )
         db = DbFactory.get_db('csv')()
         transactions = cls.create_transaction_list(db.get_records())
@@ -203,7 +204,7 @@ class TransactionManager:
             raise MissingFieldError(f'missing field {F_ID}')
 
         LoggingHelper.get_logger(cls.__name__).debug(
-            f'removing transaction {id_value}'
+            'removing transaction %s', id_value
         )
         db = DbFactory.get_db('csv')()
         db.remove_record(F_ID, id_value)
@@ -214,7 +215,7 @@ class TransactionManager:
         """
         if isinstance(data, Transaction):
             LoggingHelper.get_logger(cls.__name__).debug(
-                f'updating transaction {data._id} with {data}'
+                'updating transaction %s with %s', data._id, data
             )
             db = DbFactory.get_db('csv')()
             db.edit_record(F_ID, data._id, data.serialize())
