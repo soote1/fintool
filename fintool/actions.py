@@ -20,7 +20,7 @@ class Action:
     def __init__(self):
         pass
 
-    def exec(self):
+    def exec(self, data):
         pass
 
 

@@ -53,16 +53,16 @@ class AbstractDb:
     def add_record(self, record):
         pass
 
-    def remove_record(self, record):
+    def remove_record(self, id_field, id_value):
         pass
 
     def get_record(self, filter):
         pass
 
-    def get_records(self, filters):
+    def get_records(self):
         pass
 
-    def edit_record(self, old, new):
+    def edit_record(self, id_field, id_value, new_record):
         pass
 
 
