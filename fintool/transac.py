@@ -13,7 +13,6 @@ from fintool.logging import LoggingHelper
 class Error(Exception):
     """Base class for all errors in this module.
     """
-    pass
 
 
 class MissingFieldError(Error):

@@ -20,7 +20,6 @@ class UnsupportedDbTypeError(Exception):
     """User defined error to be raised when a client
     requests an unsupported db type.
     """
-    pass
 
 
 class DbFactory:
