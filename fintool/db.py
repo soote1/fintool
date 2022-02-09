@@ -85,6 +85,7 @@ class CsvDb(AbstractDb):
         self._records_file_tmp = self._homedir_path.joinpath(
             self.RECORDS_FILE_TMP
         )
+        super().__init__()
 
     def add_record(self, record):
         """Add a new record into csv file.
