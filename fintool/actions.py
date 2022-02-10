@@ -42,8 +42,8 @@ class CreateTransaction(Action):
         self._logger.debug('running action with: %s', data)
         try:
             data["transaction"] = TransactionManager.create_transaction(data)
-        except Exception as e:
-            raise ActionError(e)
+        except Exception as exception:
+            raise ActionError(exception)
 
 
 class SaveTransaction(Action):
