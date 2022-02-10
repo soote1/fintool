@@ -141,8 +141,8 @@ class CLI:
         BASE_DIR = pathlib.Path(__file__).parent
         cli_cfg_path = BASE_DIR.joinpath(CLI_CFG_FILE).resolve()
         self._logger.debug('loading cli config from %s', cli_cfg_path)
-        with cli_cfg_path.open() as f:
-            self._cli_cfg = json.loads(f.read())
+        with cli_cfg_path.open() as cfg_file:
+            self._cli_cfg = json.loads(cfg_file.read())
 
         self._args_parser = ArgsParser(self._cli_cfg[ARGS_PARSER_CFG])
         self._cmd_processor = CommandProcessor()
@@ -170,8 +170,8 @@ class CLI:
             cmd_data = {k: args[k] for k in args.keys() - {CLI_CMD}}
             cmd_actions = SUPPORTED_CMDS[cmd_id]
             return Command(cmd_id, cmd_actions, cmd_data)
-        except KeyError as e:
-            raise UnsupportedCmdError("Unsupported command: %s", e)
+        except KeyError as key_error:
+            raise UnsupportedCmdError("Unsupported command: %s", key_error)
 
     def run(self, args):
         """Main cli method that starts by parsing
@@ -186,8 +186,12 @@ class CLI:
             parsed_args = self.parse_args(args)
             cmd = self.create_cmd(parsed_args)
             self._cmd_processor.process(cmd)
-        except Exception as e:
-            self._logger.error('an error ocurred while running command: %s', e)
+        except Exception as exception:
+            self._logger.error(
+                'an error ocurred while running command: %s',
+                exception
+            )
+
             sys.exit(1)
 
 

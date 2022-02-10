@@ -41,8 +41,8 @@ class DbFactory:
 
         try:
             return SUPPORTED_TYPES[db_type]
-        except KeyError as e:
-            raise UnsupportedDbTypeError("Db type not supported: %s", e)
+        except KeyError as key_error:
+            raise UnsupportedDbTypeError("Db type not supported: %s", key_error)
 
 
 class AbstractDb:

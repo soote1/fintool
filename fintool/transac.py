@@ -98,11 +98,11 @@ class Transaction:
             F_TAGS: '|'.join(self._tags)
         }
 
-    def has_field(self, k):
-        return k in self._fields
+    def has_field(self, field):
+        return field in self._fields
 
-    def get_value(self, k):
-        return self._fields[k]
+    def get_value(self, field):
+        return self._fields[field]
 
     def __repr__(self):
         return f'{self._id}\t{self._date}\t{self._type}\t{self._amount}\t{self._tags}'
@@ -129,8 +129,8 @@ class TransactionManager:
                 data[F_AMOUNT],
                 data[F_ID] if F_ID in data else None
             )
-        except KeyError as e:
-            raise MissingFieldError(e)
+        except KeyError as key_error:
+            raise MissingFieldError(key_error)
 
         # keep id if was provided in data
         if F_ID in data:
@@ -140,11 +140,7 @@ class TransactionManager:
 
     @classmethod
     def create_transaction_list(cls, dicts):
-        transactions = []
-        for d in dicts:
-            transactions.append(cls.create_transaction(d))
-
-        return transactions
+        return [cls.create_transaction(current_dict) for current_dict in dicts]
 
     @classmethod
     def save_transaction(cls, transaction):
@@ -168,23 +164,23 @@ class TransactionManager:
         LoggingHelper.get_logger(cls.__name__).debug(
             'getting transactions from db using filters = %s', filters
         )
-        db = DbFactory.get_db('csv')()
-        transactions = cls.create_transaction_list(db.get_records())
+        fintool_db = DbFactory.get_db('csv')()
+        transactions = cls.create_transaction_list(fintool_db.get_records())
 
         if filters:
             filtered_transactions = []
             # keep transactions matching any filter value only
-            for k, v in filters.items():
-                for t in transactions:
+            for key, value in filters.items():
+                for transaction in transactions:
                     try:
-                        if k == F_TAGS:
+                        if key == F_TAGS:
                             # add transaction if any tag matches
-                            if v & t._tags:
-                                filtered_transactions.append(t)
+                            if value & transaction._tags:
+                                filtered_transactions.append(transaction)
                         else:
                             # add transaction if field matches filter value
-                            if v == t.get_value(k):
-                                filtered_transactions.append(t)
+                            if value == transaction.get_value(key):
+                                filtered_transactions.append(transaction)
                     except KeyError:
                         pass  # no problem, field doesn't exists
 
@@ -205,8 +201,8 @@ class TransactionManager:
         LoggingHelper.get_logger(cls.__name__).debug(
             'removing transaction %s', id_value
         )
-        db = DbFactory.get_db('csv')()
-        db.remove_record(F_ID, id_value)
+        fintool_db = DbFactory.get_db('csv')()
+        fintool_db.remove_record(F_ID, id_value)
 
     @classmethod
     def update_transaction(cls, data):
@@ -216,7 +212,7 @@ class TransactionManager:
             LoggingHelper.get_logger(cls.__name__).debug(
                 'updating transaction %s with %s', data._id, data
             )
-            db = DbFactory.get_db('csv')()
-            db.edit_record(F_ID, data._id, data.serialize())
+            fintool_db = DbFactory.get_db('csv')()
+            fintool_db.edit_record(F_ID, data._id, data.serialize())
         else:
             raise InvalidTransactionError('invalid transaction object')
