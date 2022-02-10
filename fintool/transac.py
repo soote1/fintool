@@ -158,8 +158,28 @@ class TransactionManager:
         fintool_db.add_record(record=transaction.serialize())
 
     @classmethod
+    def filter_transactions(cls, transactions, filters):
+        """Filter a list of transaction based on a set of key-values
+        """
+        result = []
+        # collect transactions matching any filter value only
+        for transaction in transactions:
+            for key, value in filters.items():
+                try:
+                    match = value & transaction.tags if key == F_TAGS \
+                            else value == transaction.get_value(key)
+
+                    if match:
+                        result.append(transaction)
+                        break
+                except KeyError:
+                    pass  # no problem, field doesn't exists
+
+        return result
+
+    @classmethod
     def get_transactions(cls, filters=None):
-        """Get transactions from db using a set of filters.
+        """Get transactions from db and apply a set of filters.
         """
         LoggingHelper.get_logger(cls.__name__).debug(
             'getting transactions from db using filters = %s', filters
@@ -168,23 +188,7 @@ class TransactionManager:
         transactions = cls.create_transaction_list(fintool_db.get_records())
 
         if filters:
-            filtered_transactions = []
-            # keep transactions matching any filter value only
-            for key, value in filters.items():
-                for transaction in transactions:
-                    try:
-                        if key == F_TAGS:
-                            # add transaction if any tag matches
-                            if value & transaction.tags:
-                                filtered_transactions.append(transaction)
-                        else:
-                            # add transaction if field matches filter value
-                            if value == transaction.get_value(key):
-                                filtered_transactions.append(transaction)
-                    except KeyError:
-                        pass  # no problem, field doesn't exists
-
-            return filtered_transactions
+            transactions = cls.filter_transactions(transactions, filters)
 
         return transactions
 
