@@ -51,14 +51,14 @@ class Transaction:
                                 the exchanged amount
         """
         if t_type in SUPPORTED_TYPES:
-            self._type = t_type
+            self.type = t_type
         else:
             raise InvalidFieldValueError(
                 f'Invalid value {t_type} for transaction type'
             )
 
         try:
-            self._tags = set(t_tags.split('|'))
+            self.tags = set(t_tags.split('|'))
         except AttributeError:
             raise InvalidFieldValueError(
                 f'Invalid value {t_tags} for transaction tags'
@@ -66,36 +66,36 @@ class Transaction:
 
         try:
             datetime.datetime.strptime(t_date, '%Y-%m-%d')
-            self._date = t_date
+            self.date = t_date
         except ValueError:
             raise InvalidFieldValueError(
                 f'Invalid value {t_date} for transaction date'
             )
 
         try:
-            self._amount = float(t_amount)
+            self.amount = float(t_amount)
         except ValueError:
             raise InvalidFieldValueError(
                 f"Invalid value {t_amount} for transaction amount"
             )
 
-        self._id = t_id if t_id else uuid.uuid4().hex
+        self.id = t_id if t_id else uuid.uuid4().hex
 
         self._fields = {
-            F_ID: self._id,
-            F_TYPE: self._type,
-            F_DATE: self._date,
-            F_AMOUNT: self._amount,
-            F_TAGS: self._tags
+            F_ID: self.id,
+            F_TYPE: self.type,
+            F_DATE: self.date,
+            F_AMOUNT: self.amount,
+            F_TAGS: self.tags
         }
 
     def serialize(self):
         return {
-            F_ID: self._id,
-            F_TYPE: self._type,
-            F_DATE: self._date,
-            F_AMOUNT: self._amount,
-            F_TAGS: '|'.join(self._tags)
+            F_ID: self.id,
+            F_TYPE: self.type,
+            F_DATE: self.date,
+            F_AMOUNT: self.amount,
+            F_TAGS: '|'.join(self.tags)
         }
 
     def has_field(self, field):
@@ -105,7 +105,7 @@ class Transaction:
         return self._fields[field]
 
     def __repr__(self):
-        return f'{self._id}\t{self._date}\t{self._type}\t{self._amount}\t{self._tags}'
+        return f'{self.id}\t{self.date}\t{self.type}\t{self.amount}\t{self.tags}'
 
 
 class TransactionManager:
@@ -134,7 +134,7 @@ class TransactionManager:
 
         # keep id if was provided in data
         if F_ID in data:
-            transaction._id = data[F_ID]
+            transaction.id = data[F_ID]
 
         return transaction
 
@@ -175,7 +175,7 @@ class TransactionManager:
                     try:
                         if key == F_TAGS:
                             # add transaction if any tag matches
-                            if value & transaction._tags:
+                            if value & transaction.tags:
                                 filtered_transactions.append(transaction)
                         else:
                             # add transaction if field matches filter value
@@ -210,9 +210,9 @@ class TransactionManager:
         """
         if isinstance(data, Transaction):
             LoggingHelper.get_logger(cls.__name__).debug(
-                'updating transaction %s with %s', data._id, data
+                'updating transaction %s with %s', data.id, data
             )
             fintool_db = DbFactory.get_db('csv')()
-            fintool_db.edit_record(F_ID, data._id, data.serialize())
+            fintool_db.edit_record(F_ID, data.id, data.serialize())
         else:
             raise InvalidTransactionError('invalid transaction object')

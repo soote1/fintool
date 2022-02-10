@@ -90,12 +90,12 @@ class ArgsParser:
 
 class Command:
     def __init__(self, cmd, actions, data):
-        self._cmd = cmd
-        self._actions = actions
-        self._data = data
+        self.cmd = cmd
+        self.actions = actions
+        self.data = data
 
     def __repr__(self):
-        return f"cmd: {self._cmd} actions: {self._actions} data: {self._data}"
+        return f"cmd: {self.cmd} actions: {self.actions} data: {self.data}"
 
 
 class CommandProcessor:
@@ -111,8 +111,8 @@ class CommandProcessor:
             data (list): The list of associated actions
         """
         self._logger.debug('processing cmd: %s', cmd)
-        for action in cmd._actions:
-            action().exec(cmd._data)
+        for action in cmd.actions:
+            action().exec(cmd.data)
 
 
 SUPPORTED_CMDS = {
@@ -144,8 +144,8 @@ class CLI:
         with cli_cfg_path.open() as cfg_file:
             self._cli_cfg = json.loads(cfg_file.read())
 
-        self._args_parser = ArgsParser(self._cli_cfg[ARGS_PARSER_CFG])
-        self._cmd_processor = CommandProcessor()
+        self.args_parser = ArgsParser(self._cli_cfg[ARGS_PARSER_CFG])
+        self.cmd_processor = CommandProcessor()
 
     def parse_args(self, args):
         """
@@ -153,7 +153,7 @@ class CLI:
         return result object.
         """
         self._logger.debug('parsing arguments: %s', args)
-        return self._args_parser.parse(args)
+        return self.args_parser.parse(args)
 
     def create_cmd(self, args):
         """Create a Command object from given cmd id.
@@ -185,7 +185,7 @@ class CLI:
         try:
             parsed_args = self.parse_args(args)
             cmd = self.create_cmd(parsed_args)
-            self._cmd_processor.process(cmd)
+            self.cmd_processor.process(cmd)
         except Exception as exception:
             self._logger.error(
                 'an error ocurred while running command: %s',
