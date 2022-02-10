@@ -134,8 +134,8 @@ class TestCLI(unittest.TestCase):
         args = {'cmd': 'add', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
-        self.assertEqual(actual._cmd, expected_cmd._cmd)
-        self.assertEqual(actual._actions, expected_cmd._actions)
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
 
     def test_create_remove_cmd(self):
         expected_actions = [fintool.actions.RemoveTransaction]
@@ -143,8 +143,8 @@ class TestCLI(unittest.TestCase):
         args = {'cmd': 'remove', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
-        self.assertEqual(actual._cmd, expected_cmd._cmd)
-        self.assertEqual(actual._actions, expected_cmd._actions)
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
 
     def test_create_list_cmd(self):
         expected_actions = [
@@ -157,8 +157,8 @@ class TestCLI(unittest.TestCase):
         args = {'cmd': 'list', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
-        self.assertEqual(actual._cmd, expected_cmd._cmd)
-        self.assertEqual(actual._actions, expected_cmd._actions)
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
 
     @unittest.skip("not implemented")
     def test_create_show_cmd(self):
@@ -174,8 +174,8 @@ class TestCLI(unittest.TestCase):
         args = {'cmd': 'edit', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
-        self.assertEqual(actual._cmd, expected_cmd._cmd)
-        self.assertEqual(actual._actions, expected_cmd._actions)
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
 
     @unittest.skip("not implemented")
     def test_execute_cmd(self):

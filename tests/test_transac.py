@@ -37,11 +37,11 @@ class TestTransactions(unittest.TestCase):
         })
 
         # compare everything but id since it is uuid
-        self.assertTrue(isinstance(actual._id, str))
-        self.assertEqual(actual._type, expected['type'])
-        self.assertEqual(actual._date, expected['date'])
-        self.assertEqual(actual._amount, expected['amount'])
-        self.assertEqual(actual._tags, expected['tags'])
+        self.assertTrue(isinstance(actual.id, str))
+        self.assertEqual(actual.type, expected['type'])
+        self.assertEqual(actual.date, expected['date'])
+        self.assertEqual(actual.amount, expected['amount'])
+        self.assertEqual(actual.tags, expected['tags'])
 
     def test_save_transaction(self):
         """Just make sure that the test doesn't raises any error since
@@ -95,26 +95,26 @@ class TestTransactions(unittest.TestCase):
         # compare everything but id
         for i in range(len(expected)):
             self.assertEqual(
-                actual[i]._type,
-                expected[i]._type,
+                actual[i].type,
+                expected[i].type,
                 "transaction type not equal"
             )
 
             self.assertEqual(
-                actual[i]._date,
-                expected[i]._date,
+                actual[i].date,
+                expected[i].date,
                 "transaction date not equal"
             )
 
             self.assertEqual(
-                actual[i]._amount,
-                expected[i]._amount,
+                actual[i].amount,
+                expected[i].amount,
                 "transaction amount not equal"
             )
 
             self.assertEqual(
-                actual[i]._tags,
-                expected[i]._tags,
+                actual[i].tags,
+                expected[i].tags,
                 "transaction tags not equal"
             )
 
@@ -151,26 +151,26 @@ class TestTransactions(unittest.TestCase):
         # compare everything but id
         for i in range(len(expected)):
             self.assertEqual(
-                actual[i]._type,
-                expected[i]._type,
+                actual[i].type,
+                expected[i].type,
                 "transaction type not equal"
             )
 
             self.assertEqual(
-                actual[i]._date,
-                expected[i]._date,
+                actual[i].date,
+                expected[i].date,
                 "transaction date not equal"
             )
 
             self.assertEqual(
-                actual[i]._amount,
-                expected[i]._amount,
+                actual[i].amount,
+                expected[i].amount,
                 "transaction amount not equal"
             )
 
             self.assertEqual(
-                actual[i]._tags,
-                expected[i]._tags,
+                actual[i].tags,
+                expected[i].tags,
                 "transaction tags not equal"
             )
 
@@ -207,26 +207,26 @@ class TestTransactions(unittest.TestCase):
         # compare everything but id
         for i in range(len(expected)):
             self.assertEqual(
-                actual[i]._type,
-                expected[i]._type,
+                actual[i].type,
+                expected[i].type,
                 "transaction type not equal"
             )
 
             self.assertEqual(
-                actual[i]._date,
-                expected[i]._date,
+                actual[i].date,
+                expected[i].date,
                 "transaction date not equal"
             )
 
             self.assertEqual(
-                actual[i]._amount,
-                expected[i]._amount,
+                actual[i].amount,
+                expected[i].amount,
                 "transaction amount not equal"
             )
 
             self.assertEqual(
-                actual[i]._tags,
-                expected[i]._tags,
+                actual[i].tags,
+                expected[i].tags,
                 "transaction tags not equal"
             )
 
@@ -242,7 +242,7 @@ class TestTransactions(unittest.TestCase):
             })
         )
         actual = TransactionManager.get_transactions()
-        TransactionManager.remove_transaction({'id': actual[0]._id})
+        TransactionManager.remove_transaction({'id': actual[0].id})
         actual = TransactionManager.get_transactions()
 
         self.assertEqual(actual, expected, "transaction list not equal")
@@ -281,25 +281,25 @@ class TestTransactions(unittest.TestCase):
         actual = TransactionManager.get_transactions()
 
         self.assertEqual(
-            actual[0]._type,
-            expected[0]._type,
+            actual[0].type,
+            expected[0].type,
             "transaction type not equal"
         )
 
         self.assertEqual(
-            actual[0]._date,
-            expected[0]._date,
+            actual[0].date,
+            expected[0].date,
             "transaction date not equal"
         )
 
         self.assertEqual(
-            actual[0]._amount,
-            expected[0]._amount,
+            actual[0].amount,
+            expected[0].amount,
             "transaction amount not equal"
         )
 
         self.assertEqual(
-            actual[0]._tags,
-            expected[0]._tags,
+            actual[0].tags,
+            expected[0].tags,
             "transaction tags not equal"
         )
