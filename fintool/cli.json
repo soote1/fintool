@@ -84,14 +84,14 @@
                     ]
                 },
                 {
-                    "name": "show",
-                    "help": "Show transactions in some chart",
+                    "name": "stats",
+                    "help": "show different types of stats about transactions",
                     "args": [
                         {
-                            "id": "--chart-type",
+                            "id": "--draw",
                             "kwargs": {
-                                "help": "The chart type to use to plot transactions",
-                                "required": true
+                                "help": "Show the stats in a chart",
+                                "required":
                             }
                         },
                         {

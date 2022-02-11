@@ -166,3 +166,34 @@ class UpdateTransaction(Action):
             TransactionManager.update_transaction(data['transaction'])
         except KeyError:
             raise ActionError('Missing input value: transaction')
+
+
+class CreateStats(Action):
+    """Process a set of transactions to generate statistics.
+    """
+
+    def __init__(self):
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """Use transaction manager to generate statistics.
+        """
+
+        self._logger.debug('running action with %s', data)
+        # TODO: implement action
+
+
+class ShowStats(Action):
+    """Show a set of stats.
+    """
+
+    def __init__(self, data):
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """Show a set of stats in in stdout.
+        """
+        self._logger.debug('running action with %s', data)
+        # TODO: implement action
