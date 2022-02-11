@@ -220,3 +220,15 @@ class TransactionManager:
             fintool_db.edit_record(F_ID, data.id, data.serialize())
         else:
             raise InvalidTransactionError('invalid transaction object')
+
+
+class StatsHelper:
+    """Generate different types of stats based on a list of transactions
+    """
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def create_summary(cls):
+        pass

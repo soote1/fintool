@@ -11,7 +11,9 @@ from fintool.actions import (
     GetTransactions,
     PrintTransactions,
     RemoveTransaction,
-    UpdateTransaction
+    UpdateTransaction,
+    CreateStats,
+    ShowStats
 )
 from fintool.logging import LoggingHelper
 
@@ -31,7 +33,7 @@ CLI_CMD = "cmd"
 ADD_CMD = "add"
 REMOVE_CMD = "remove"
 LIST_CMD = "list"
-SHOW_CMD = "show"
+STATS_CMD = "stats"
 EDIT_CMD = "edit"
 
 
@@ -119,7 +121,7 @@ SUPPORTED_CMDS = {
     ADD_CMD: [CreateTransaction, SaveTransaction],
     REMOVE_CMD: [RemoveTransaction],
     LIST_CMD: [CreateFilters, GetTransactions, PrintTransactions],
-    SHOW_CMD: [],
+    STATS_CMD: [CreateFilters, GetTransactions, CreateStats, ShowStats],
     EDIT_CMD: [CreateTransaction, UpdateTransaction],
 }
 
