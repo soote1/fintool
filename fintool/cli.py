@@ -171,7 +171,7 @@ class CLI:
             cmd_actions = SUPPORTED_CMDS[cmd_id]
             return Command(cmd_id, cmd_actions, cmd_data)
         except KeyError as key_error:
-            raise UnsupportedCmdError("Unsupported command: %s", key_error)
+            raise UnsupportedCmdError(f"Unsupported command: {key_error}")
 
     def run(self, args):
         """Main cli method that starts by parsing
