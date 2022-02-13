@@ -88,6 +88,14 @@
           "help": "show different types of stats about transactions",
           "args": [
             {
+              "id": "--statstype",
+              "kwargs": {
+                "help": "Indicate what type of summary should be displayed",
+                "default": "overall_summary",
+                "choices": ["overall_summary"]
+              }
+            },
+            {
               "id": "--draw",
               "kwargs": {
                 "help": "Show the stats in a chart"
