@@ -6,6 +6,7 @@ to create commands for cli object.
 
 from fintool.transac import TransactionManager
 from fintool.logging import LoggingHelper
+from fintool.stats import StatsHelper
 
 
 class Error(Exception):
@@ -171,17 +172,21 @@ class UpdateTransaction(Action):
 class CreateStats(Action):
     """Process a set of transactions to generate statistics.
     """
+    STATS = 'stats'
+    STATS_TYPE = 'statstype'
+    TRANSACTIONS = 'transactions'
 
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         super().__init__()
 
     def exec(self, data):
-        """Use transaction manager to generate statistics.
+        """Use stats helper to generate statistics.
         """
-
         self._logger.debug('running action with %s', data)
-        # TODO: implement action
+        stats_helper = StatsHelper(data[self.TRANSACTIONS])
+        stats = stats_helper.create_stats(data[self.STATS_TYPE])
+        data[self.STATS] = stats
 
 
 class ShowStats(Action):
