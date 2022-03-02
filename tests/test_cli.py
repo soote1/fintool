@@ -67,10 +67,11 @@ class TestCLI(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_parse_show_cmd(self):
+    def test_parse_stats_cmd(self):
         expected = {
-            'cmd': 'show',
-            'chart_type': 'pie',
+            'cmd': 'stats',
+            'statstype': 'overall_summary',
+            'draw': 'pie',
             'type': 'income',
             'date': 'sad-asdasd',
             'tags': 'a,b,c',
@@ -78,8 +79,10 @@ class TestCLI(unittest.TestCase):
         }
 
         cmd = [
-            "show",
-            "--chart-type",
+            "stats",
+            "--statstype",
+            "overall_summary",
+            "--draw",
             "pie",
             "--type",
             "income",
