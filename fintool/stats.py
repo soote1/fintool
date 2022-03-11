@@ -3,8 +3,45 @@ This module provides helper classes to perform statistic analysis
 on data sets.
 """
 import datetime
+import calendar
 
 from fintool.logging import LoggingHelper
+
+
+class OverallSummary:
+    """A class to store and serialize a data set representing
+    an overall summary.
+    """
+    def __init__(self, data):
+        self._data = data
+
+    def get_data(self):
+        return self._data
+
+    def __str__(self):
+        """Create a human readable representation of the
+        data encapsulated by the class.
+        """
+        overall_summary = ''
+        for year, months in self._data.items():
+            overall_summary = f'{overall_summary}Year: {year}\n'
+            for month, monthly_data in months.items():
+                month_name = f'Month: {calendar.month_name[month]}\n'
+                overall_summary = f'{overall_summary}{month_name}'
+
+                transactions_str = ''.join(
+                    [str(tx) + '\n' for tx in monthly_data['transactions']]
+                )
+                overall_summary = f'{overall_summary}{transactions_str}\n'
+
+                # I could use list comprehension but line is too long :(
+                total_per_tag_strs = []
+                for tag, total in monthly_data['total_per_tag'].items():
+                    total_per_tag_strs.append(f'{tag}:\t{total}\n')
+                total_per_tag_str = ''.join(total_per_tag_strs)
+                overall_summary = f'{overall_summary}{total_per_tag_str}\n'
+
+        return overall_summary
 
 
 class StatsHelper:
@@ -16,7 +53,7 @@ class StatsHelper:
 
     def __init__(self, dataset):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        self._logger.info('initializing stats helper')
+        self._logger.debug('initializing stats helper')
         self._dataset = dataset
         self._supported_stats = {
             self.OVERALL_SUMMARY: self.create_overall_summary
@@ -26,9 +63,9 @@ class StatsHelper:
         """Identify the type of stats and calculate
         them by calling the appropriate method.
         """
-        self._logger.info('requested stats: %s', stats_type)
+        self._logger.debug('requested stats: %s', stats_type)
         try:
-            self._supported_stats[stats_type]()
+            return self._supported_stats[stats_type]()
         except KeyError:
             raise ValueError(f'unsupported stats type: {stats_type}')
 
@@ -47,7 +84,7 @@ class StatsHelper:
             }
         }
         """
-        self._logger.info('creating overall summary')
+        self._logger.debug('creating overall summary')
         result = {}
         for data in self._dataset:
             year = datetime.datetime.strptime(data.date, '%Y-%m-%d').year
@@ -74,4 +111,4 @@ class StatsHelper:
                 else:
                     result[year][month][self.TOTAL_PER_TAG][tag] = data.amount
 
-            return result
+        return OverallSummary(result)
