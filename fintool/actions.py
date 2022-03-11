@@ -192,8 +192,10 @@ class CreateStats(Action):
 class ShowStats(Action):
     """Show a set of stats.
     """
+    DRAW = 'draw'
+    STATS = 'stats'
 
-    def __init__(self, data):
+    def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         super().__init__()
 
@@ -201,4 +203,7 @@ class ShowStats(Action):
         """Show a set of stats in in stdout.
         """
         self._logger.debug('running action with %s', data)
-        # TODO: implement action
+        if data[self.DRAW]:
+            pass
+        else:
+            print(data[self.STATS])
