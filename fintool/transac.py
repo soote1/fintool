@@ -105,7 +105,8 @@ class Transaction:
         return self._fields[field]
 
     def __repr__(self):
-        return f'{self.id}\t{self.date}\t{self.type}\t{self.amount}\t{self.tags}'
+        return f'{self.id}\t{self.date}\t{self.type}\t{self.amount}'\
+            f'\t{self.tags}'
 
 
 class TransactionManager:
