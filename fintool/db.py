@@ -49,16 +49,16 @@ class AbstractDb:
     """Abstract class to define db behavior.
     """
 
-    def add_record(self, record):
+    def add_record(self, record, collection):
         pass
 
-    def remove_record(self, id_field, id_value):
+    def remove_record(self, id_field, id_value, collection):
         pass
 
-    def get_records(self):
+    def get_records(self, collection):
         pass
 
-    def edit_record(self, id_field, id_value, new_record):
+    def edit_record(self, id_field, id_value, new_record, collection):
         pass
 
 
@@ -67,39 +67,50 @@ class CsvDb(AbstractDb):
     """
 
     HOMEDIR = '~/.fintool'
-    RECORDS_FILE = 'records.csv'
-    RECORDS_FILE_TMP = 'records.csv.tmp'
+    RECORDS_FILE = '{}.csv'
+    RECORDS_FILE_TMP = '{}.csv.tmp'
 
     def __init__(self, homedir=HOMEDIR):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         # create home dir
         self._homedir_path = pathlib.Path(homedir).expanduser()
         self._homedir_path.mkdir(parents=True, exist_ok=True)
-
-        # create path to records file
-        self._records_file = self._homedir_path.joinpath(self.RECORDS_FILE)
-        self._records_file_tmp = self._homedir_path.joinpath(
-            self.RECORDS_FILE_TMP
-        )
         super().__init__()
 
-    def add_record(self, record):
+    def create_collection_objects(self, collection):
+        """
+        Create file objects to manage records in collection file and return
+        them in a tuple.
+        """
+        return (
+            self._homedir_path.joinpath(self.RECORDS_FILE.format(collection)),
+            self._homedir_path.joinpath(
+                self.RECORDS_FILE_TMP.format(collection)
+            )
+        )
+
+    def add_record(self, record, collection):
         """Add a new record into csv file.
 
         Args:
             record (dict): A dictionary representing the new record.
         """
         self._logger.debug('adding record to csv db %s', record)
-        file_exists = self._records_file.is_file()
-        with self._records_file.open('a', newline='') as csvfile:
+        collection_file, _ = self.create_collection_objects(collection)
+        file_exists = collection_file.is_file()
+        with collection_file.open(
+            'a',
+            newline='',
+            encoding='utf-8',
+        ) as csvfile:
             field_names = record.keys()
             writer = csv.DictWriter(csvfile, fieldnames=field_names)
-
+            # write header if file didn't exists before trying to open it.
             if not file_exists:
                 writer.writeheader()
             writer.writerow(record)
 
-    def remove_record(self, id_field, id_value):
+    def remove_record(self, id_field, id_value, collection):
         """Remove a record from csv file.
 
         Args:
@@ -107,13 +118,24 @@ class CsvDb(AbstractDb):
             id_value (str): A string representing record's id value
         """
         self._logger.debug('removing record with id %s from csv db', id_value)
-        with self._records_file.open('r', newline='') as records_csv_file:
+        collection_file, collection_tmp_file = self.create_collection_objects(
+            collection
+        )
+        with collection_file.open(
+            'r',
+            newline='',
+            encoding='utf-8',
+        ) as records_csv_file:
             # create reader and get field names
             reader = csv.DictReader(records_csv_file)
             # field_names can't be None or DictWriter will complain
             field_names = reader.fieldnames if reader.fieldnames else []
 
-            with self._records_file_tmp.open('w', newline='') as tmp_csv_file:
+            with collection_tmp_file.open(
+                'w',
+                encoding='utf-8',
+                newline=''
+            ) as tmp_csv_file:
                 # create writer to dump data in tmp file
                 writer = csv.DictWriter(tmp_csv_file, fieldnames=field_names)
                 writer.writeheader()
@@ -124,16 +146,21 @@ class CsvDb(AbstractDb):
                         writer.writerow(row)
 
         # replace original csv with tmp file
-        pathlib.Path(self._records_file_tmp).replace(self._records_file)
+        pathlib.Path(collection_tmp_file).replace(collection_file)
 
-    def get_records(self):
+    def get_records(self, collection):
         """Return records from csv file that matches any filter in filters
 
         Args:
             filters (dict): a dictionary mapping keys with target values.
         """
         self._logger.debug('getting records from db')
-        with self._records_file.open('r', newline='') as csvfile:
+        collection_file, _ = self.create_collection_objects(collection)
+        with collection_file.open(
+            'r',
+            newline='',
+            encoding='utf-8',
+        ) as csvfile:
             result = []
             reader = csv.DictReader(csvfile)
 
@@ -142,7 +169,7 @@ class CsvDb(AbstractDb):
 
             return result
 
-    def edit_record(self, id_field, id_value, new_record):
+    def edit_record(self, id_field, id_value, new_record, collection):
         """Update a record with a new set of values while keeping id.
 
         Args:
@@ -151,13 +178,24 @@ class CsvDb(AbstractDb):
             new_record (dict): A dictionary representing the new set of values
         """
         self._logger.debug('updating record %s with %s', id_value, new_record)
-        with self._records_file.open('r', newline='') as records_csv_file:
+        collection_file, collection_tmp_file = self.create_collection_objects(
+            collection
+        )
+        with collection_file.open(
+            'r',
+            newline='',
+            encoding='utf-8',
+        ) as records_csv_file:
             # create reader and get field names
             reader = csv.DictReader(records_csv_file)
             # field_names can't be None or DictWriter will complain
             field_names = reader.fieldnames if reader.fieldnames else []
 
-            with self._records_file_tmp.open('w', newline='') as tmp_csv_file:
+            with collection_tmp_file.open(
+                'w',
+                encoding='utf-8',
+                newline=''
+            ) as tmp_csv_file:
                 # create writer to dump data in tmp file
                 writer = csv.DictWriter(tmp_csv_file, fieldnames=field_names)
                 writer.writeheader()
@@ -172,7 +210,7 @@ class CsvDb(AbstractDb):
                         writer.writerow(new_record)
 
         # replace original csv with tmp file
-        pathlib.Path(self._records_file_tmp).replace(self._records_file)
+        pathlib.Path(collection_tmp_file).replace(collection_file)
 
 
 SUPPORTED_TYPES = {'csv': CsvDb}

@@ -110,6 +110,9 @@ class Transaction:
 
 
 class TransactionManager:
+
+    TRANSACTION_COLLECTION = 'records'
+
     @classmethod
     def create_transaction(cls, data):
         """Create a transaction from a dictionary instance.
@@ -156,7 +159,10 @@ class TransactionManager:
             'saving transaction in db'
         )
         fintool_db = DbFactory.get_db('csv')()
-        fintool_db.add_record(record=transaction.serialize())
+        fintool_db.add_record(
+            record=transaction.serialize(),
+            collection=cls.TRANSACTION_COLLECTION
+        )
 
     @classmethod
     def filter_transactions(cls, transactions, filters):
@@ -186,7 +192,9 @@ class TransactionManager:
             'getting transactions from db using filters = %s', filters
         )
         fintool_db = DbFactory.get_db('csv')()
-        transactions = cls.create_transaction_list(fintool_db.get_records())
+        transactions = cls.create_transaction_list(
+            fintool_db.get_records(cls.TRANSACTION_COLLECTION),
+        )
 
         if filters:
             transactions = cls.filter_transactions(transactions, filters)
@@ -207,7 +215,7 @@ class TransactionManager:
             'removing transaction %s', id_value
         )
         fintool_db = DbFactory.get_db('csv')()
-        fintool_db.remove_record(F_ID, id_value)
+        fintool_db.remove_record(F_ID, id_value, cls.TRANSACTION_COLLECTION)
 
     @classmethod
     def update_transaction(cls, data):
@@ -218,18 +226,11 @@ class TransactionManager:
                 'updating transaction %s with %s', data.id, data
             )
             fintool_db = DbFactory.get_db('csv')()
-            fintool_db.edit_record(F_ID, data.id, data.serialize())
+            fintool_db.edit_record(
+                F_ID,
+                data.id,
+                data.serialize(),
+                cls.TRANSACTION_COLLECTION
+            )
         else:
             raise InvalidTransactionError('invalid transaction object')
-
-
-class StatsHelper:
-    """Generate different types of stats based on a list of transactions
-    """
-
-    def __init__(self):
-        pass
-
-    @classmethod
-    def create_summary(cls):
-        pass
