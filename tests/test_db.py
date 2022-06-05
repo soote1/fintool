@@ -37,7 +37,7 @@ class TestCsvDb(unittest.TestCase):
         expected_record = '1,2,"[\'a\', \'b\', \'c\']"\n'
 
         file_db = fintool.db.CsvDb()
-        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']})
+        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']}, 'records')
 
         with self.RECORDS_FILE.open() as f:
             lines = f.readlines()
@@ -64,9 +64,9 @@ class TestCsvDb(unittest.TestCase):
         expected_content = 'a,b,c\n1,2,"[\'a\', \'b\', \'c\']"\n'
 
         file_db = fintool.db.CsvDb()
-        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']})
-        file_db.add_record({'a': 2, 'b': 3, 'c': ['a', 'b', 'c']})
-        file_db.remove_record(id_field='a', id_value='2')
+        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']}, 'records')
+        file_db.add_record({'a': 2, 'b': 3, 'c': ['a', 'b', 'c']}, 'records')
+        file_db.remove_record(id_field='a', id_value='2', collection='records')
 
         with self.RECORDS_FILE.open() as f:
             actual_content = f.read()
@@ -87,12 +87,12 @@ class TestCsvDb(unittest.TestCase):
 
         file_db = fintool.db.CsvDb()
 
-        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']})
-        file_db.add_record({'a': 2, 'b': 3, 'c': ['a', 'b', 'c']})
-        file_db.add_record({'a': 3, 'b': 4, 'c': ['a', 'b', 'c']})
-        file_db.add_record({'a': 4, 'b': 5, 'c': ['a', 'b', 'c']})
+        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']}, 'records')
+        file_db.add_record({'a': 2, 'b': 3, 'c': ['a', 'b', 'c']}, 'records')
+        file_db.add_record({'a': 3, 'b': 4, 'c': ['a', 'b', 'c']}, 'records')
+        file_db.add_record({'a': 4, 'b': 5, 'c': ['a', 'b', 'c']}, 'records')
 
-        actual_content = file_db.get_records()
+        actual_content = file_db.get_records('records')
 
         self.assertEqual(
             actual_content,
@@ -104,11 +104,12 @@ class TestCsvDb(unittest.TestCase):
         expected_content = 'a,b,c\n1,3,[\'a\']\n'
 
         file_db = fintool.db.CsvDb()
-        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']})
+        file_db.add_record({'a': 1, 'b': 2, 'c': ['a', 'b', 'c']}, 'records')
         file_db.edit_record(
             id_field='a',
             id_value='1',
-            new_record={'a': 1, 'b': 3, 'c': ['a']}
+            new_record={'a': 1, 'b': 3, 'c': ['a']},
+            collection='records'
         )
 
         with self.RECORDS_FILE.open() as f:
