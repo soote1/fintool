@@ -23,7 +23,7 @@ class InvalidValueError(Exception):
 # TODO: config logging from file
 class LoggingHelper:
 
-    LOG_LEVEL = "info"
+    LOG_LEVEL = logging.INFO
     FORMATTER = logging.Formatter(
         "%(asctime)s — %(name)s — %(levelname)s — %(message)s"
     )
