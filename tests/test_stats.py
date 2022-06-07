@@ -1,6 +1,6 @@
 import unittest
 
-from fintool.transac import TransactionManager
+from fintool.transac import Transaction
 from fintool.stats import StatsHelper, OverallSummary
 
 
@@ -8,63 +8,62 @@ class TestStats(unittest.TestCase):
     """"""
     @classmethod
     def setUpClass(cls):
-        transaction_manager = TransactionManager()
         cls.transactions = [
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2022-01-01',
                 'amount': '200.5',
                 'tags': 'food|uber'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2022-01-02',
                 'amount': '300.5',
                 'tags': 'food|uber'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2022-02-01',
                 'amount': '400.5',
                 'tags': 'food|uber'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2022-02-02',
                 'amount': '200.5',
                 'tags': 'food|fresko'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2022-03-01',
                 'amount': '500',
                 'tags': 'transportation|uber'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2022-03-02',
                 'amount': '200.5',
                 'tags': 'transportation|uber'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2023-01-01',
                 'amount': '12',
                 'tags': 'food|fresko'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2023-01-02',
                 'amount': '400',
                 'tags': 'food|fresko'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2023-02-01',
                 'amount': '500',
                 'tags': 'food|fresko'
             }),
-            transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2023-02-02',
                 'amount': '100.5',
