@@ -16,26 +16,41 @@ class Error(Exception):
 
 
 class MissingFieldError(Error):
-    pass
+    """
+    Raised when trying to convert a dictionary that misses a required field
+    into a transaction.
+    """
 
 
 class InvalidFieldValueError(Error):
-    pass
+    """
+    Raised when the user tries to assign an invalid value to some field.
+    """
 
 
 class InvalidTransactionError(Error):
-    pass
+    """
+    Raised when the user passes an invalid transaction object to the
+    transaction manager.
+    """
 
 
-F_ID = 'id'
-F_TYPE = 'type'
-F_TAGS = 'tags'
-F_DATE = 'date'
-F_AMOUNT = 'amount'
-SUPPORTED_TYPES = {'income', 'outcome'}
+class InvalidFieldError(Error):
+    """
+    Raised when the user requests a value for an invalid field.
+    """
 
 
 class Transaction:
+    """
+    A type to define a transaction object.
+    """
+    ID = 'id'
+    TYPE = 'type'
+    TAGS = 'tags'
+    DATE = 'date'
+    AMOUNT = 'amount'
+    SUPPORTED_TYPES = {'income', 'outcome'}
     def __init__(self, t_type, t_tags, t_date, t_amount, t_id=None):
         """Do input validation on arguments and initialize fields.
 
@@ -50,7 +65,7 @@ class Transaction:
             t_amount (float):   a floating point number representing
                                 the exchanged amount
         """
-        if t_type in SUPPORTED_TYPES:
+        if t_type in self.SUPPORTED_TYPES:
             self.type = t_type
         else:
             raise InvalidFieldValueError(
@@ -82,29 +97,60 @@ class Transaction:
         self.id = t_id if t_id else uuid.uuid4().hex
 
         self._fields = {
-            F_ID: self.id,
-            F_TYPE: self.type,
-            F_DATE: self.date,
-            F_AMOUNT: self.amount,
-            F_TAGS: self.tags
+            self.ID: self.id,
+            self.TYPE: self.type,
+            self.DATE: self.date,
+            self.AMOUNT: self.amount,
+            self.TAGS: self.tags
         }
+
+    @classmethod
+    def from_dict(cls, data):
+        """
+        Create a transaction instance from a dict object.
+        """
+        try:
+            transaction = Transaction(
+                data[cls.TYPE],
+                data[cls.TAGS],
+                data[cls.DATE],
+                data[cls.AMOUNT],
+                data[cls.ID] if cls.ID in data else None
+            )
+        except KeyError as key_error:
+            raise MissingFieldError(f'Input dict is missing: {key_error}')
+
+        # keep id if was provided in data
+        if cls.ID in data:
+            transaction.id = data[cls.ID]
+
+        return transaction
 
     def serialize(self):
+        """
+        Convert the transaction instance into a dictionary.
+        """
         return {
-            F_ID: self.id,
-            F_TYPE: self.type,
-            F_DATE: self.date,
-            F_AMOUNT: self.amount,
-            F_TAGS: '|'.join(self.tags)
+            self.ID: self.id,
+            self.TYPE: self.type,
+            self.DATE: self.date,
+            self.AMOUNT: self.amount,
+            self.TAGS: '|'.join(self.tags)
         }
 
-    def has_field(self, field):
-        return field in self._fields
-
     def get_value(self, field):
-        return self._fields[field]
+        """
+        Return the corresponding value for the given key.
+        """
+        try:
+            return self._fields[field]
+        except KeyError:
+            raise InvalidFieldError(f'{field} is not supported')
 
-    def __repr__(self):
+    def __str__(self):
+        """
+        Return a human-readable representation of the transaction instance.
+        """
         return f'{self.id}\t{self.date}\t{self.type}\t{self.amount}'\
             f'\t{self.tags}'
 
@@ -123,36 +169,11 @@ class TransactionManager:
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         self._db = DbFactory.get_db('csv')()
 
-    def create_transaction(self, data):
-        """Create a transaction from a dictionary instance.
-
-        Args:
-            data (dict): A dictionary with values for new transaction.
-        """
-        self._logger.debug('creating new transaction with %s', data)
-
-        try:
-            transaction = Transaction(
-                data[F_TYPE],
-                data[F_TAGS],
-                data[F_DATE],
-                data[F_AMOUNT],
-                data[F_ID] if F_ID in data else None
-            )
-        except KeyError as key_error:
-            raise MissingFieldError(key_error)
-
-        # keep id if was provided in data
-        if F_ID in data:
-            transaction.id = data[F_ID]
-
-        return transaction
-
     def create_transaction_list(self, dicts):
         """
         Create a list of Transaction instances from a list of dictionaries.
         """
-        return [self.create_transaction(d) for d in dicts]
+        return [Transaction.from_dict(d) for d in dicts]
 
     def save_transaction(self, transaction):
         """Save a transaction in db.
@@ -177,13 +198,13 @@ class TransactionManager:
         for transaction in transactions:
             for key, value in filters.items():
                 try:
-                    match = value & transaction.tags if key == F_TAGS \
+                    match = value & transaction.tags if key == Transaction.TAGS \
                             else value == transaction.get_value(key)
 
                     if match:
                         result.append(transaction)
                         break
-                except KeyError:
+                except InvalidFieldError:
                     pass  # no problem, field doesn't exists
 
         return result
@@ -207,12 +228,16 @@ class TransactionManager:
         to remove a transaction from db.
         """
         try:
-            id_value = data[F_ID]
+            id_value = data[Transaction.ID]
         except KeyError:
-            raise MissingFieldError(f'missing field {F_ID}')
+            raise MissingFieldError(f'missing field {Transaction.ID}')
 
         self._logger.debug('removing transaction %s', id_value)
-        self._db.remove_record(F_ID, id_value, self.TRANSACTION_COLLECTION)
+        self._db.remove_record(
+            Transaction.ID,
+            id_value,
+            self.TRANSACTION_COLLECTION
+        )
 
     def update_transaction(self, data):
         """Update a transaction in db by using the provided id and data.
@@ -220,7 +245,7 @@ class TransactionManager:
         self._logger.debug('updating transaction %s with %s', data.id, data)
         if isinstance(data, Transaction):
             self._db.edit_record(
-                F_ID,
+                Transaction.ID,
                 data.id,
                 data.serialize(),
                 self.TRANSACTION_COLLECTION

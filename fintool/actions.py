@@ -4,7 +4,7 @@ to create commands for cli object.
 """
 
 
-from fintool.transac import TransactionManager
+from fintool.transac import Transaction, TransactionManager
 from fintool.logging import LoggingHelper
 from fintool.stats import StatsHelper
 
@@ -41,9 +41,8 @@ class CreateTransaction(Action):
                             a transaction.
         """
         self._logger.debug('running action with: %s', data)
-        transaction_manager = TransactionManager()
         try:
-            data["transaction"] = transaction_manager.create_transaction(data)
+            data["transaction"] = Transaction.from_dict(data)
         except Exception as exception:
             raise ActionError(exception)
 

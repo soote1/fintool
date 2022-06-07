@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from fintool.transac import TransactionManager
+from fintool.transac import Transaction, TransactionManager
 
 
 class TestTransactions(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestTransactions(unittest.TestCase):
             'tags': {'a', 'b', 'c'}
         }
 
-        actual = self.transaction_manager.create_transaction({
+        actual = Transaction.from_dict({
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
@@ -50,7 +50,7 @@ class TestTransactions(unittest.TestCase):
         other tests already validate db contents.
         """
 
-        actual = self.transaction_manager.create_transaction({
+        actual = Transaction.from_dict({
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
@@ -61,14 +61,14 @@ class TestTransactions(unittest.TestCase):
 
     def test_get_transactions(self):
         expected = [
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'id': '',
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
                 'tags': 'a|b|c'
             }),
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'id': '',
                 'type': 'income',
                 'date': '2023-01-01',
@@ -77,7 +77,7 @@ class TestTransactions(unittest.TestCase):
             })
         ]
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -85,7 +85,7 @@ class TestTransactions(unittest.TestCase):
             })
         )
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'income',
                 'date': '2023-01-01',
                 'amount': '121.3',
@@ -122,7 +122,7 @@ class TestTransactions(unittest.TestCase):
 
     def test_get_transactions_with_filters(self):
         expected = [
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'id': '',
                 'type': 'outcome',
                 'date': '2023-01-01',
@@ -131,7 +131,7 @@ class TestTransactions(unittest.TestCase):
             })
         ]
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -139,7 +139,7 @@ class TestTransactions(unittest.TestCase):
             })
         )
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2023-01-01',
                 'amount': '121.3',
@@ -178,7 +178,7 @@ class TestTransactions(unittest.TestCase):
 
     def test_get_transactions_by_tags(self):
         expected = [
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'id': '',
                 'type': 'outcome',
                 'date': '2023-01-01',
@@ -187,7 +187,7 @@ class TestTransactions(unittest.TestCase):
             })
         ]
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -195,7 +195,7 @@ class TestTransactions(unittest.TestCase):
             })
         )
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'outcome',
                 'date': '2023-01-01',
                 'amount': '121.3',
@@ -236,7 +236,7 @@ class TestTransactions(unittest.TestCase):
         expected = []
 
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -251,7 +251,7 @@ class TestTransactions(unittest.TestCase):
 
     def test_edit_transaction(self):
         expected = [
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
                 'type': 'income',
                 'date': '2022-01-01',
@@ -261,7 +261,7 @@ class TestTransactions(unittest.TestCase):
         ]
 
         self.transaction_manager.save_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
                 'type': 'outcome',
                 'date': '2022-02-02',
@@ -271,7 +271,7 @@ class TestTransactions(unittest.TestCase):
         )
 
         self.transaction_manager.update_transaction(
-            self.transaction_manager.create_transaction({
+            Transaction.from_dict({
                 'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
                 'type': 'income',
                 'date': '2022-01-01',
