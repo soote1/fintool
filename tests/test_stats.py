@@ -8,62 +8,63 @@ class TestStats(unittest.TestCase):
     """"""
     @classmethod
     def setUpClass(cls):
+        transaction_manager = TransactionManager()
         cls.transactions = [
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2022-01-01',
                 'amount': '200.5',
                 'tags': 'food|uber'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2022-01-02',
                 'amount': '300.5',
                 'tags': 'food|uber'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2022-02-01',
                 'amount': '400.5',
                 'tags': 'food|uber'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2022-02-02',
                 'amount': '200.5',
                 'tags': 'food|fresko'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2022-03-01',
                 'amount': '500',
                 'tags': 'transportation|uber'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2022-03-02',
                 'amount': '200.5',
                 'tags': 'transportation|uber'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2023-01-01',
                 'amount': '12',
                 'tags': 'food|fresko'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2023-01-02',
                 'amount': '400',
                 'tags': 'food|fresko'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2023-02-01',
                 'amount': '500',
                 'tags': 'food|fresko'
             }),
-            TransactionManager.create_transaction({
+            transaction_manager.create_transaction({
                 'type': 'outcome',
                 'date': '2023-02-02',
                 'amount': '100.5',
