@@ -41,8 +41,9 @@ class CreateTransaction(Action):
                             a transaction.
         """
         self._logger.debug('running action with: %s', data)
+        transaction_manager = TransactionManager()
         try:
-            data["transaction"] = TransactionManager.create_transaction(data)
+            data["transaction"] = transaction_manager.create_transaction(data)
         except Exception as exception:
             raise ActionError(exception)
 
@@ -62,8 +63,9 @@ class SaveTransaction(Action):
             data (dict): A dictionary containing a transaction.
         """
         self._logger.debug('running action with: %s', data)
+        transaction_manager = TransactionManager()
         try:
-            TransactionManager.save_transaction(data["transaction"])
+            transaction_manager.save_transaction(data["transaction"])
         except KeyError:
             raise ActionError("Missing input value: transaction")
 
@@ -114,7 +116,8 @@ class GetTransactions(Action):
         """Use TransactionManager to get transactions from db.
         """
         self._logger.debug('running action with: %s', data)
-        txs = TransactionManager.get_transactions(data.get(self.FILTERS))
+        transaction_manager = TransactionManager()
+        txs = transaction_manager.get_transactions(data.get(self.FILTERS))
         data[self.TRANSACTIONS] = txs
 
 
@@ -146,8 +149,8 @@ class RemoveTransaction(Action):
         corresponding transaction from db using TransactionManager.
         """
         self._logger.debug('running action with %s', data)
-
-        TransactionManager.remove_transaction(data)
+        transaction_manager = TransactionManager()
+        transaction_manager.remove_transaction(data)
 
 
 class UpdateTransaction(Action):
@@ -163,8 +166,9 @@ class UpdateTransaction(Action):
         TransactionManager.
         """
         self._logger.debug('running action with %s', data)
+        transaction_manager = TransactionManager()
         try:
-            TransactionManager.update_transaction(data['transaction'])
+            transaction_manager.update_transaction(data['transaction'])
         except KeyError:
             raise ActionError('Missing input value: transaction')
 
