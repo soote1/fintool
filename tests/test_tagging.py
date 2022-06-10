@@ -6,6 +6,7 @@ import pathlib
 
 from fintool.tagging import Tag, TagManager
 from fintool.db import CsvDb
+from tests.fixtures.util import remove_dir
 
 class TestTagging(unittest.TestCase):
     """
@@ -26,13 +27,7 @@ class TestTagging(unittest.TestCase):
         """
         Clean database on each test execution.
         """
-        try:
-            for f in self.DB_DIR.glob("*"):
-                f.unlink()
-
-            self.DB_DIR.rmdir()
-        except FileNotFoundError:
-            pass  # db doesn't exists
+        remove_dir(self.DB_DIR)
         self.tag_manager = TagManager()
 
     def add_tags(self, tags):
