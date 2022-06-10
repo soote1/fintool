@@ -32,9 +32,9 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_parse_remove_cmd(self):
-        expected = {'cmd': 'remove', 'id': 'aasd'}
+        expected = {'cmd': 'remove', 'id': '1', 'date': '2020-01-01'}
 
-        cmd = ["remove", "--id", "aasd"]
+        cmd = ['remove', '--id', '1', '--date', '2020-01-01']
 
         cli = fintool.cli.CLI()
         actual = cli.parse_args(cmd)
@@ -45,17 +45,20 @@ class TestCLI(unittest.TestCase):
         expected = {
             'cmd': 'list',
             'type': 'income',
-            'date': 'sad-asdasd',
             'tags': 'a,b,c',
-            'amount': '12-32'
+            'amount': '12-32',
+            'from' : '2020-01-01',
+            'to': '2020-02-01'
         }
 
         cmd = [
             "list",
             "--type",
             "income",
-            "--date",
-            "sad-asdasd",
+            "--from",
+            "2020-01-01",
+            "--to",
+            "2020-02-01",
             "--amount",
             "12-32",
             "--tags",
@@ -73,7 +76,8 @@ class TestCLI(unittest.TestCase):
             'statstype': 'overall_summary',
             'draw': 'pie',
             'type': 'income',
-            'date': 'sad-asdasd',
+            'from': '2020-01-01',
+            'to': '2020-02-01',
             'tags': 'a,b,c',
             'amount': '12-32'
         }
@@ -86,8 +90,10 @@ class TestCLI(unittest.TestCase):
             "pie",
             "--type",
             "income",
-            "--date",
-            "sad-asdasd",
+            "--from",
+            "2020-01-01",
+            "--to",
+            "2020-02-01",
             "--amount",
             "12-32",
             "--tags",
@@ -104,7 +110,8 @@ class TestCLI(unittest.TestCase):
             'cmd': 'edit',
             'id': 'some-id',
             'type': 'some-type',
-            'date': 'some-date',
+            'olddate': '2020-01-01',
+            'date': '2020-02-01',
             'amount': '123.2',
             'tags': 'a,b,c'
         }
@@ -115,8 +122,10 @@ class TestCLI(unittest.TestCase):
             "some-id",
             "--type",
             "some-type",
+            "--olddate",
+            "2020-01-01",
             "--date",
-            "some-date",
+            "2020-02-01",
             "--amount",
             "123.2",
             "--tags",

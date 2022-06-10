@@ -90,9 +90,6 @@ class CreateFilters(Action):
         if data[self.TYPE]:
             filters[self.TYPE] = data[self.TYPE]
 
-        if data[self.DATE]:
-            filters[self.DATE] = data[self.DATE]
-
         if data[self.AMOUNT]:
             filters[self.AMOUNT] = data[self.AMOUNT]
 
@@ -109,6 +106,8 @@ class GetTransactions(Action):
     def __init__(self):
         self.TRANSACTIONS = 'transactions'
         self.FILTERS = 'filters'
+        self.FROM = 'from'
+        self.TO = 'to'
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         super().__init__()
 
@@ -117,7 +116,11 @@ class GetTransactions(Action):
         """
         self._logger.debug('running action with: %s', data)
         transaction_manager = TransactionManager()
-        txs = transaction_manager.get_transactions(data.get(self.FILTERS))
+        txs = transaction_manager.get_transactions(
+            data[self.FROM],
+            data[self.TO],
+            filters=data[self.FILTERS]
+        )
         data[self.TRANSACTIONS] = txs
 
 
@@ -142,6 +145,8 @@ class RemoveTransaction(Action):
     """
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        self.ID = 'id'
+        self.DATE = 'date'
         super().__init__()
 
     def exec(self, data):
@@ -150,7 +155,7 @@ class RemoveTransaction(Action):
         """
         self._logger.debug('running action with %s', data)
         transaction_manager = TransactionManager()
-        transaction_manager.remove_transaction(data)
+        transaction_manager.remove_transaction(data[self.DATE], data[self.ID])
 
 
 class UpdateTransaction(Action):
@@ -159,6 +164,8 @@ class UpdateTransaction(Action):
 
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        self.OLD_DATE = 'olddate'
+        self.TRANSACTION = 'transaction'
         super().__init__()
 
     def exec(self, data):
@@ -168,7 +175,10 @@ class UpdateTransaction(Action):
         self._logger.debug('running action with %s', data)
         transaction_manager = TransactionManager()
         try:
-            transaction_manager.update_transaction(data['transaction'])
+            transaction_manager.update_transaction(
+                data[self.OLD_DATE],
+                data[self.TRANSACTION]
+            )
         except KeyError:
             raise ActionError('Missing input value: transaction')
 

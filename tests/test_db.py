@@ -3,6 +3,8 @@ import unittest
 
 import fintool.db
 
+from tests.fixtures.util import remove_dir
+
 
 class TestCsvDb(unittest.TestCase):
     """Test CsvDb methods.
@@ -14,13 +16,7 @@ class TestCsvDb(unittest.TestCase):
         cls.RECORDS_FILE = cls.DB_DIR.joinpath("records.csv")
 
     def setUp(self):
-        try:
-            for f in self.DB_DIR.glob("*"):
-                f.unlink()
-
-            self.DB_DIR.rmdir()
-        except FileNotFoundError:
-            pass  # db doesn't exists
+        remove_dir(self.DB_DIR)
 
     def test_create_db(self):
 

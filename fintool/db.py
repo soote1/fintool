@@ -94,12 +94,15 @@ class CsvDb(AbstractDb):
         Create file objects to manage records in collection file and return
         them in a tuple.
         """
-        return (
-            self._homedir_path.joinpath(self.RECORDS_FILE.format(collection)),
-            self._homedir_path.joinpath(
-                self.RECORDS_FILE_TMP.format(collection)
-            )
+        records_file = self._homedir_path.joinpath(
+            self.RECORDS_FILE.format(collection)
         )
+        # create dir if not exists
+        records_file.parent.mkdir(parents=True, exist_ok=True)
+        records_tmp_file = self._homedir_path.joinpath(
+            self.RECORDS_FILE_TMP.format(collection)
+        )
+        return (records_file, records_tmp_file)
 
     def add_record(self, record, collection):
         """Add a new record into csv file.

@@ -6,7 +6,7 @@ This module provides classes to create and manage transactions.
 import uuid
 import datetime
 
-from fintool.db import DbFactory
+from fintool.db import CollectionNotFoundError, DbFactory
 from fintool.logging import LoggingHelper
 
 
@@ -169,6 +169,49 @@ class TransactionManager:
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         self._db = DbFactory.get_db('csv')()
 
+    def calculate_collection_from_date(self, date_str):
+        """
+        Return a string representing the namespace of the corresponding
+        collection to fetch/store a transaction based in the given date. The
+        namespace has the following pattern: YYYY/MM (2022/01)
+        """
+        self._logger.debug('calculating collection namespace for %s', date_str)
+        date_parts = date_str.split('-')
+        return f'{date_parts[0]}/{date_parts[1]}'
+
+    def calculate_collections_from_date_range(self, from_str, to_str):
+        """
+        Return a list of strings representing the namespace of the
+        corresponding collections to fetch/store transactions.
+        """
+        self._logger.debug(
+            'calculating collection namespaces for range %s - %s',
+            from_str,
+            to_str
+        )
+        from_parts = from_str.split('-')
+        to_parts = to_str.split('-')
+        initial_year = int(from_parts[0])
+        month = int(from_parts[1])
+        year = initial_year
+        year_limit = int(to_parts[0])
+        month_limit = int(to_parts[1])
+        collections = []
+
+        while True:
+            if month > month_limit and year == year_limit:  # stop the loop
+                break
+            elif month == 13:  # reset month and increase year
+                month = 1
+                year += 1
+            else:  # calculate namespace for year and month
+                date_str = f'{year}-{"0" if month < 10 else ""}{month}'
+                collection = self.calculate_collection_from_date(date_str)
+                collections.append(collection)
+                month += 1
+
+        return collections
+
     def create_transaction_list(self, dicts):
         """
         Create a list of Transaction instances from a list of dictionaries.
@@ -184,9 +227,10 @@ class TransactionManager:
         # TODO: need to get db type from cfg
         # TODO: need to inject db object so that we can test with mock data
         self._logger.debug('saving transaction in db')
+        collection = self.calculate_collection_from_date(transaction.date)
         self._db.add_record(
             record=transaction.serialize(),
-            collection=self.TRANSACTION_COLLECTION
+            collection=collection
         )
 
     def filter_transactions(self, transactions, filters):
@@ -209,13 +253,23 @@ class TransactionManager:
 
         return result
 
-    def get_transactions(self, filters=None):
+    def get_transactions(self, from_date, to_date, filters=None):
         """Get transactions from db and apply a set of filters.
         """
         self._logger.debug(
             'getting transactions from db using filters = %s', filters
         )
-        records = self._db.get_records(self.TRANSACTION_COLLECTION)
+        collections = self.calculate_collections_from_date_range(
+            from_date, to_date
+        )
+        records = []
+        for collection in collections:
+            try:
+                records += self._db.get_records(collection)
+            except CollectionNotFoundError:
+                # no problem, log message and continue with next collection
+                self._logger.debug('collection not found: %s', collection)
+
         transactions = self.create_transaction_list(records)
 
         if filters:
@@ -223,32 +277,45 @@ class TransactionManager:
 
         return transactions
 
-    def remove_transaction(self, data):
+    def remove_transaction(self, date_str, guid_str):
         """Make sure that data contains a value for id field and use it
         to remove a transaction from db.
         """
-        try:
-            id_value = data[Transaction.ID]
-        except KeyError:
-            raise MissingFieldError(f'missing field {Transaction.ID}')
-
-        self._logger.debug('removing transaction %s', id_value)
+        self._logger.debug('removing transaction %s', guid_str)
+        collection = self.calculate_collection_from_date(date_str)
         self._db.remove_record(
             Transaction.ID,
-            id_value,
-            self.TRANSACTION_COLLECTION
+            guid_str,
+            collection
         )
 
-    def update_transaction(self, data):
+    def check_need_to_move_record(self, old_date_str, new_date_str):
+        """
+        Check whether we need to move the record due to a change in the date
+        associated date. We need to move the record if the year or month is
+        different.
+        """
+        self._logger.debug('checking if record needs to be moved')
+        old_date_parts = old_date_str.split('-')
+        new_date_parts = new_date_str.split('-')
+        return old_date_parts[0] != new_date_parts[0] or \
+                old_date_parts[1] != new_date_parts[1]
+
+    def update_transaction(self, old_date_str, data):
         """Update a transaction in db by using the provided id and data.
         """
         self._logger.debug('updating transaction %s with %s', data.id, data)
         if isinstance(data, Transaction):
-            self._db.edit_record(
-                Transaction.ID,
-                data.id,
-                data.serialize(),
-                self.TRANSACTION_COLLECTION
-            )
+            if self.check_need_to_move_record(old_date_str, data.date):
+                self.remove_transaction(old_date_str, data.id)
+                self.save_transaction(data)
+            else:
+                collection = self.calculate_collection_from_date(data.date)
+                self._db.edit_record(
+                    Transaction.ID,
+                    data.id,
+                    data.serialize(),
+                    collection
+                )
         else:
             raise InvalidTransactionError('invalid transaction object')

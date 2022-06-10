@@ -50,6 +50,13 @@
                 "help": "Transaction id",
                 "required": true
               }
+            },
+            {
+              "id": "--date",
+              "kwargs": {
+                "required": true,
+                "help": "Transaction date"
+              }
             }
           ]
         },
@@ -64,9 +71,17 @@
               }
             },
             {
-              "id": "--date",
+              "id": "--from",
               "kwargs": {
-                "help": "Date interval to filter transactions"
+                "required": true,
+                "help": "Start date to filter transactions"
+              }
+            },
+            {
+              "id": "--to",
+              "kwargs": {
+                "required": true,
+                "help": "End date to filter transactions"
               }
             },
             {
@@ -110,9 +125,17 @@
               }
             },
             {
-              "id": "--date",
+              "id": "--from",
               "kwargs": {
-                "help": "Date interval to filter transactions"
+                "required": true,
+                "help": "Start date to filter transactions"
+              }
+            },
+            {
+              "id": "--to",
+              "kwargs": {
+                "required": true,
+                "help": "End date to filter transactions"
               }
             },
             {
@@ -147,8 +170,16 @@
               }
             },
             {
+              "id": "--olddate",
+              "kwargs": {
+                "required": true,
+                "help": "Old transaction date"
+              }
+            },
+            {
               "id": "--date",
               "kwargs": {
+                "required": true,
                 "help": "New transaction date"
               }
             },
