@@ -13,7 +13,13 @@ from fintool.actions import (
     RemoveTransaction,
     UpdateTransaction,
     CreateStats,
-    ShowStats
+    ShowStats,
+    CreateTag,
+    AddTag,
+    GetTags,
+    EditTag,
+    RemoveTag,
+    PrintTags
 )
 from fintool.logging import LoggingHelper
 
@@ -35,6 +41,10 @@ REMOVE_CMD = "remove"
 LIST_CMD = "list"
 STATS_CMD = "stats"
 EDIT_CMD = "edit"
+ADD_TAG_CMD = 'add_tag'
+EDIT_TAG_CMD = 'edit_tag'
+REMOVE_TAG_CMD = 'remove_tag'
+LIST_TAGS_CMD = 'list_tags'
 
 
 class ArgsParser:
@@ -123,6 +133,10 @@ SUPPORTED_CMDS = {
     LIST_CMD: [CreateFilters, GetTransactions, PrintTransactions],
     STATS_CMD: [CreateFilters, GetTransactions, CreateStats, ShowStats],
     EDIT_CMD: [CreateTransaction, UpdateTransaction],
+    ADD_TAG_CMD: [CreateTag, AddTag],
+    EDIT_TAG_CMD: [CreateTag, EditTag],
+    REMOVE_TAG_CMD: [RemoveTag],
+    LIST_TAGS_CMD: [GetTags, PrintTags]
 }
 
 

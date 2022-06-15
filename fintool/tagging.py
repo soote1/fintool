@@ -13,16 +13,19 @@ class Error(Exception):
     Base class for all errors in this module.
     """
 
+
 class MissingTagArgumentError(Error):
     """
     Raised when trying to create a Tag instance and some required argument is
     missing.
     """
 
+
 class InvalidTagObject(Error):
     """
     Raised when passing a non Tag instance to the transcation manager.
     """
+
 
 class Tag:
     """
@@ -166,14 +169,12 @@ class TagManager:
         if self._tags:
             self.load_tags()
 
-    def delete_tag(self, tag):
+    def delete_tag(self, tag_id):
         """
         Remove a tag from tags db.
         """
-        self._logger.debug('Removing tag %s from db', tag.id)
-        if not isinstance(tag, Tag):
-            raise InvalidTagObject(f'Invalid tag object: {type(tag)}')
-        self._db.remove_record(Tag.F_ID, tag.id, self.TAGS_COLLECTION)
+        self._logger.debug('Removing tag %s from db', tag_id)
+        self._db.remove_record(Tag.F_ID, tag_id, self.TAGS_COLLECTION)
 
         # reload tags if already loaded into memory
         if self._tags:
