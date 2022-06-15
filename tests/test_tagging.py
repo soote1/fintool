@@ -104,7 +104,7 @@ class TestTagging(unittest.TestCase):
         """
         tag = Tag(concept='a', tags_str='a|b|c')
         self.tag_manager.add_tag(tag)
-        self.tag_manager.delete_tag(tag)
+        self.tag_manager.delete_tag(tag.id)
         tags = self.tag_manager.get_tags()
         self.assertEqual(len(tags), 0)
 

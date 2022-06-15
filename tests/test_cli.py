@@ -187,3 +187,136 @@ class TestCLI(unittest.TestCase):
     @unittest.skip("not implemented")
     def test_init(self):
         pass  # TODO
+
+    def test_create_add_tag_cmd(self):
+        expected_actions = [
+            fintool.actions.CreateTag,
+            fintool.actions.AddTag
+        ]
+        expected_cmd = fintool.cli.Command("add_tag", expected_actions, None)
+
+        args = {'cmd': 'add_tag', 'other': None}
+        actual = fintool.cli.CLI().create_cmd(args)
+
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
+
+    def test_create_edit_tag_cmd(self):
+        expected_actions = [
+            fintool.actions.CreateTag,
+            fintool.actions.EditTag
+        ]
+        expected_cmd = fintool.cli.Command("edit_tag", expected_actions, None)
+
+        args = {'cmd': 'edit_tag', 'other': None}
+        actual = fintool.cli.CLI().create_cmd(args)
+
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
+
+    def test_create_remove_tag_cmd(self):
+        expected_actions = [
+            fintool.actions.RemoveTag
+        ]
+        expected_cmd = fintool.cli.Command(
+            "remove_tag",
+            expected_actions,
+            None
+        )
+
+        args = {'cmd': 'remove_tag', 'other': None}
+        actual = fintool.cli.CLI().create_cmd(args)
+
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
+
+    def test_create_list_tags_cmd(self):
+        expected_actions = [
+            fintool.actions.GetTags,
+            fintool.actions.PrintTags
+        ]
+        expected_cmd = fintool.cli.Command(
+            "list_tags",
+            expected_actions,
+            None
+        )
+
+        args = {'cmd': 'list_tags', 'other': None}
+        actual = fintool.cli.CLI().create_cmd(args)
+
+        self.assertEqual(actual.cmd, expected_cmd.cmd)
+        self.assertEqual(actual.actions, expected_cmd.actions)
+
+    def test_parse_add_tag_cmd(self):
+        expected = {
+            'cmd': 'add_tag',
+            'concept': 'some_concept',
+            'tags': 'a|b|c'
+        }
+
+        cmd = [
+            "add_tag",
+            "--concept",
+            "some_concept",
+            "--tags",
+            "a|b|c"
+        ]
+
+        cli = fintool.cli.CLI()
+        actual = cli.parse_args(cmd)
+
+        self.assertEqual(actual, expected)
+
+    def test_parse_edit_tag_cmd(self):
+        expected = {
+            'cmd': 'edit_tag',
+            'concept': 'some_concept',
+            'tags': 'a|b|c',
+            'tagid': 'some_id'
+        }
+
+        cmd = [
+            "edit_tag",
+            "--concept",
+            "some_concept",
+            "--tags",
+            "a|b|c",
+            "--tagid",
+            "some_id"
+        ]
+
+        cli = fintool.cli.CLI()
+        actual = cli.parse_args(cmd)
+
+        self.assertEqual(actual, expected)
+
+    def test_parse_remove_tag_cmd(self):
+        expected = {
+            'cmd': 'remove_tag',
+            'tagid': 'some_id'
+        }
+
+        cmd = [
+            "remove_tag",
+            "--tagid",
+            "some_id"
+        ]
+
+        cli = fintool.cli.CLI()
+        actual = cli.parse_args(cmd)
+
+        self.assertEqual(actual, expected)
+
+    def test_parse_list_tags_cmd(self):
+        expected = {
+            'cmd': 'list_tags',
+        }
+
+        cmd = [
+            "list_tags",
+        ]
+
+        cli = fintool.cli.CLI()
+        actual = cli.parse_args(cmd)
+
+        self.assertEqual(actual, expected)

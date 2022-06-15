@@ -7,6 +7,7 @@ to create commands for cli object.
 from fintool.transac import Transaction, TransactionManager
 from fintool.logging import LoggingHelper
 from fintool.stats import StatsHelper
+from fintool.tagging import Tag, TagManager
 
 
 class Error(Exception):
@@ -210,3 +211,161 @@ class ShowStats(Action):
             pass
         else:
             print(data[self.STATS])
+
+
+class CreateTag(Action):
+    """
+    Create a Tag instance from command data.
+    """
+    CONCEPT = 'concept'
+    TAGS = 'tags'
+    TAG_ID = 'tagid'
+    TAG = 'tag'
+
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper().get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Read cli arguments from data, create a Tag instance and
+        add it to data.
+        """
+        self._logger.debug('running action with %', data)
+        try:
+            concept = data[self.CONCEPT]
+            tags = data[self.TAGS]
+            tag_id = data.get(self.TAG_ID, None)
+        except KeyError as e:
+            raise ActionError(f'Missing required input element: {e}')
+
+        tag = Tag(concept=concept, tags_str=tags, tag_id=tag_id)
+        data[self.TAG] = tag
+
+
+class AddTag(Action):
+    """
+    Insert a tag into the db.
+    """
+    TAG = 'tag'
+
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Insert a Tag instance into the db using the tag manager.
+        """
+        self._logger.debug('running action with: %s', data)
+        try:
+            tag = data[self.TAG]
+        except KeyError as e:
+            raise ActionError(f'Missing required input element: {e}')
+
+        tag_manager = TagManager()
+        tag_manager.add_tag(tag)
+
+
+class GetTags(Action):
+    """
+    Retrieve all tags from db.
+    """
+    TAGS = 'tags'
+
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Retrieve all the tags from the db using the TagManager.
+        """
+        self._logger.debug('running action with: %s', data)
+        tag_manager = TagManager()
+        tags = tag_manager.get_tags()
+        data[self.TAGS] = tags
+
+
+class EditTag(Action):
+    """
+    Change the values of an existing tag.
+    """
+    TAG = 'tag'
+
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Replace the existing values of a given tag with the new values
+        provided as cli arguments.
+        """
+        self._logger.debug('running action with: %s', data)
+        try:
+            tag = data[self.TAG]
+        except KeyError as e:
+            raise ActionError(f'Missing required input element: {e}')
+        tag_manager = TagManager()
+        tag_manager.update_tag(tag)
+
+
+class RemoveTag(Action):
+    """
+    Remove a tag from the db.
+    """
+    TAG_ID = 'tagid'
+
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Remove a tag from the db using the given id.
+        """
+        self._logger.debug('running action with: %s', data)
+        try:
+            tag_id = data[self.TAG_ID]
+        except KeyError as e:
+            raise ActionError(f'Missing required input element: {e}')
+
+        tag_manager = TagManager()
+        tag_manager.delete_tag(tag_id)
+
+
+class PrintTags(Action):
+    """
+    Print a list of tags to stdout.
+    """
+    TAGS = 'tags'
+
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Print a list of tags to stdout.
+        """
+        for tag in data[self.TAGS]:
+            print(tag)

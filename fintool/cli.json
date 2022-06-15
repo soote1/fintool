@@ -92,7 +92,9 @@
               "kwargs": {
                 "help": "Indicate what type of summary should be displayed",
                 "default": "overall_summary",
-                "choices": ["overall_summary"]
+                "choices": [
+                  "overall_summary"
+                ]
               }
             },
             {
@@ -163,6 +165,68 @@
               }
             }
           ]
+        },
+        {
+          "name": "add_tag",
+          "help": "Add a new tag to db",
+          "args": [
+            {
+              "id": "--concept",
+              "kwargs": {
+                "help": "The concept that is related to the tags"
+              }
+            },
+            {
+              "id": "--tags",
+              "kwargs": {
+                "help": "A | separated list of tags"
+              }
+            }
+          ]
+        },
+        {
+          "name": "edit_tag",
+          "help": "Update the values of a an existing tag",
+          "args": [
+            {
+              "id": "--tagid",
+              "kwargs": {
+                "required": true,
+                "help": "The tag identifier"
+              }
+            },
+            {
+              "id": "--concept",
+              "kwargs": {
+                "required": true,
+                "help": "The concept that is related to the tags"
+              }
+            },
+            {
+              "id": "--tags",
+              "kwargs": {
+                "required": true,
+                "help": "A | separated list of tags"
+              }
+            }
+          ]
+        },
+        {
+          "name": "remove_tag",
+          "help": "Remove a given tag from db",
+          "args": [
+            {
+              "id": "--tagid",
+              "kwargs": {
+                "help": "The tag identifier"
+              }
+            }
+          ]
+        },
+        {
+          "name": "list_tags",
+          "help": "List all tags in db",
+          "args": []
         }
       ]
     }
