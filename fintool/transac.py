@@ -6,7 +6,7 @@ This module provides classes to create and manage transactions.
 import uuid
 import datetime
 
-from fintool.db import CollectionNotFoundError, DbFactory
+from fintool.db import MissingCollectionError, DbFactory
 from fintool.logging import LoggingHelper
 
 
@@ -51,6 +51,7 @@ class Transaction:
     DATE = 'date'
     AMOUNT = 'amount'
     SUPPORTED_TYPES = {'income', 'outcome'}
+
     def __init__(self, t_type, t_tags, t_date, t_amount, t_id=None):
         """Do input validation on arguments and initialize fields.
 
@@ -266,7 +267,7 @@ class TransactionManager:
         for collection in collections:
             try:
                 records += self._db.get_records(collection)
-            except CollectionNotFoundError:
+            except MissingCollectionError:
                 # no problem, log message and continue with next collection
                 self._logger.debug('collection not found: %s', collection)
 
@@ -299,7 +300,7 @@ class TransactionManager:
         old_date_parts = old_date_str.split('-')
         new_date_parts = new_date_str.split('-')
         return old_date_parts[0] != new_date_parts[0] or \
-                old_date_parts[1] != new_date_parts[1]
+            old_date_parts[1] != new_date_parts[1]
 
     def update_transaction(self, old_date_str, data):
         """Update a transaction in db by using the provided id and data.
