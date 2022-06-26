@@ -4,7 +4,7 @@ create, retrieve, update and delete.
 """
 import uuid
 
-from fintool.db import DbFactory
+from fintool.db import DbFactory, MissingCollectionError
 from fintool.logging import LoggingHelper
 
 
@@ -24,6 +24,12 @@ class MissingTagArgumentError(Error):
 class InvalidTagObject(Error):
     """
     Raised when passing a non Tag instance to the transcation manager.
+    """
+
+
+class NoTagsError(Error):
+    """
+    Raised when there are no tags available.
     """
 
 
@@ -148,7 +154,10 @@ class TagManager:
         Retrieve all tags from tag db.
         """
         self._logger.debug('Retrieving tags from tag db')
-        tags = self._db.get_records(self.TAGS_COLLECTION)
+        try:
+            tags = self._db.get_records(self.TAGS_COLLECTION)
+        except MissingCollectionError:
+            raise NoTagsError('No tags available in db')
         return self.create_tag_list(tags)
 
     def update_tag(self, tag):
