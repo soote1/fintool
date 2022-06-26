@@ -16,9 +16,21 @@ import pathlib
 from fintool.logging import LoggingHelper
 
 
-class UnsupportedDbTypeError(Exception):
+class Error(Exception):
+    """
+    Base class for errors in this module.
+    """
+
+
+class UnsupportedDbTypeError(Error):
     """User defined error to be raised when a client
     requests an unsupported db type.
+    """
+
+
+class MissingCollectionError(Error):
+    """
+    Raised when the collection does not exist.
     """
 
 
@@ -121,29 +133,37 @@ class CsvDb(AbstractDb):
         collection_file, collection_tmp_file = self.create_collection_objects(
             collection
         )
-        with collection_file.open(
-            'r',
-            newline='',
-            encoding='utf-8',
-        ) as records_csv_file:
-            # create reader and get field names
-            reader = csv.DictReader(records_csv_file)
-            # field_names can't be None or DictWriter will complain
-            field_names = reader.fieldnames if reader.fieldnames else []
-
-            with collection_tmp_file.open(
-                'w',
+        try:
+            with collection_file.open(
+                'r',
+                newline='',
                 encoding='utf-8',
-                newline=''
-            ) as tmp_csv_file:
-                # create writer to dump data in tmp file
-                writer = csv.DictWriter(tmp_csv_file, fieldnames=field_names)
-                writer.writeheader()
+            ) as records_csv_file:
+                # create reader and get field names
+                reader = csv.DictReader(records_csv_file)
+                # field_names can't be None or DictWriter will complain
+                field_names = reader.fieldnames if reader.fieldnames else []
 
-                # resume reading and write each row into tmp file
-                for row in reader:
-                    if row[id_field] != id_value:
-                        writer.writerow(row)
+                with collection_tmp_file.open(
+                    'w',
+                    encoding='utf-8',
+                    newline=''
+                ) as tmp_csv_file:
+                    # create writer to dump data in tmp file
+                    writer = csv.DictWriter(
+                        tmp_csv_file,
+                        fieldnames=field_names
+                    )
+                    writer.writeheader()
+
+                    # resume reading and write each row into tmp file
+                    for row in reader:
+                        if row[id_field] != id_value:
+                            writer.writerow(row)
+        except FileNotFoundError:
+            raise MissingCollectionError(
+                f'The collection {collection} does not exists'
+            )
 
         # replace original csv with tmp file
         pathlib.Path(collection_tmp_file).replace(collection_file)
@@ -154,20 +174,25 @@ class CsvDb(AbstractDb):
         Args:
             filters (dict): a dictionary mapping keys with target values.
         """
+        result = []
         self._logger.debug('getting records from db')
         collection_file, _ = self.create_collection_objects(collection)
-        with collection_file.open(
-            'r',
-            newline='',
-            encoding='utf-8',
-        ) as csvfile:
-            result = []
-            reader = csv.DictReader(csvfile)
+        try:
+            with collection_file.open(
+                'r',
+                newline='',
+                encoding='utf-8',
+            ) as csvfile:
+                result = []
+                reader = csv.DictReader(csvfile)
 
-            for row in reader:
-                result.append(row)
-
-            return result
+                for row in reader:
+                    result.append(row)
+        except FileNotFoundError:
+            raise MissingCollectionError(
+                f'The collection {collection} does not exist'
+            )
+        return result
 
     def edit_record(self, id_field, id_value, new_record, collection):
         """Update a record with a new set of values while keeping id.
@@ -181,33 +206,41 @@ class CsvDb(AbstractDb):
         collection_file, collection_tmp_file = self.create_collection_objects(
             collection
         )
-        with collection_file.open(
-            'r',
-            newline='',
-            encoding='utf-8',
-        ) as records_csv_file:
-            # create reader and get field names
-            reader = csv.DictReader(records_csv_file)
-            # field_names can't be None or DictWriter will complain
-            field_names = reader.fieldnames if reader.fieldnames else []
-
-            with collection_tmp_file.open(
-                'w',
+        try:
+            with collection_file.open(
+                'r',
+                newline='',
                 encoding='utf-8',
-                newline=''
-            ) as tmp_csv_file:
-                # create writer to dump data in tmp file
-                writer = csv.DictWriter(tmp_csv_file, fieldnames=field_names)
-                writer.writeheader()
+            ) as records_csv_file:
+                # create reader and get field names
+                reader = csv.DictReader(records_csv_file)
+                # field_names can't be None or DictWriter will complain
+                field_names = reader.fieldnames if reader.fieldnames else []
 
-                # start reading rows from original csv file
-                for row in reader:
-                    # write row to tmp file if it is not the target row
-                    if row[id_field] != id_value:
-                        writer.writerow(row)
-                    # otherwise write new record
-                    else:
-                        writer.writerow(new_record)
+                with collection_tmp_file.open(
+                    'w',
+                    encoding='utf-8',
+                    newline=''
+                ) as tmp_csv_file:
+                    # create writer to dump data in tmp file
+                    writer = csv.DictWriter(
+                        tmp_csv_file,
+                        fieldnames=field_names
+                    )
+                    writer.writeheader()
+
+                    # start reading rows from original csv file
+                    for row in reader:
+                        # write row to tmp file if it is not the target row
+                        if row[id_field] != id_value:
+                            writer.writerow(row)
+                        # otherwise write new record
+                        else:
+                            writer.writerow(new_record)
+        except FileNotFoundError:
+            raise MissingCollectionError(
+                f'The collection {collection} does not exists'
+            )
 
         # replace original csv with tmp file
         pathlib.Path(collection_tmp_file).replace(collection_file)
