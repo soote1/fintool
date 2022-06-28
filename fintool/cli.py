@@ -36,15 +36,16 @@ KWARGS = "kwargs"
 CLI_CFG_FILE = "cli.json"
 ARGS_PARSER_CFG = "argsparser"
 CLI_CMD = "cmd"
-ADD_CMD = "add"
-REMOVE_CMD = "remove"
-LIST_CMD = "list"
-STATS_CMD = "stats"
-EDIT_CMD = "edit"
-ADD_TAG_CMD = 'add_tag'
-EDIT_TAG_CMD = 'edit_tag'
-REMOVE_TAG_CMD = 'remove_tag'
-LIST_TAGS_CMD = 'list_tags'
+CMD_ACTION = 'action'
+ADD_TX_CMD = "txs.add"
+REMOVE_TX_CMD = "txs.remove"
+LIST_TX_CMD = "txs.list"
+STATS_TX_CMD = "txs.stats"
+EDIT_TX_CMD = "txs.edit"
+ADD_TAG_CMD = 'tags.add'
+EDIT_TAG_CMD = 'tags.edit'
+REMOVE_TAG_CMD = 'tags.remove'
+LIST_TAGS_CMD = 'tags.list'
 
 
 class ArgsParser:
@@ -128,11 +129,11 @@ class CommandProcessor:
 
 
 SUPPORTED_CMDS = {
-    ADD_CMD: [CreateTransaction, SaveTransaction],
-    REMOVE_CMD: [RemoveTransaction],
-    LIST_CMD: [CreateFilters, GetTransactions, PrintTransactions],
-    STATS_CMD: [CreateFilters, GetTransactions, CreateStats, ShowStats],
-    EDIT_CMD: [CreateTransaction, UpdateTransaction],
+    ADD_TX_CMD: [CreateTransaction, SaveTransaction],
+    REMOVE_TX_CMD: [RemoveTransaction],
+    LIST_TX_CMD: [CreateFilters, GetTransactions, PrintTransactions],
+    STATS_TX_CMD: [CreateFilters, GetTransactions, CreateStats, ShowStats],
+    EDIT_TX_CMD: [CreateTransaction, UpdateTransaction],
     ADD_TAG_CMD: [CreateTag, AddTag],
     EDIT_TAG_CMD: [CreateTag, EditTag],
     REMOVE_TAG_CMD: [RemoveTag],
@@ -182,10 +183,12 @@ class CLI:
         self._logger.debug('creating command from args: %s', args)
         try:
             cmd_id = args[CLI_CMD]
+            cmd_action = args[CMD_ACTION]
+            cmd_namespace = f'{cmd_id}.{cmd_action}'
             # cmd data consists of all key-values in args except cmd id
-            cmd_data = {k: args[k] for k in args.keys() - {CLI_CMD}}
-            cmd_actions = SUPPORTED_CMDS[cmd_id]
-            return Command(cmd_id, cmd_actions, cmd_data)
+            cmd_data = {k: args[k] for k in args.keys() - {CLI_CMD, CMD_ACTION}}
+            cmd_actions = SUPPORTED_CMDS[cmd_namespace]
+            return Command(cmd_namespace, cmd_actions, cmd_data)
         except KeyError as key_error:
             raise UnsupportedCmdError(f"Unsupported command: {key_error}")
 

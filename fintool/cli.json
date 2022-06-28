@@ -7,257 +7,279 @@
       "required": true,
       "subparsers_cfgs": [
         {
-          "name": "add",
-          "help": "Add a transaction",
-          "args": [
-            {
-              "id": "--type",
-              "kwargs": {
-                "required": true,
-                "help": "Transaction type"
-              }
-            },
-            {
-              "id": "--date",
-              "kwargs": {
-                "required": true,
-                "help": "Transaction date"
-              }
-            },
-            {
-              "id": "--amount",
-              "kwargs": {
-                "required": true,
-                "help": "Transaction amount"
-              }
-            },
-            {
-              "id": "--tags",
-              "kwargs": {
-                "required": true,
-                "help": "A list of tags describing the transaction"
-              }
-            }
-          ]
-        },
-        {
-          "name": "remove",
-          "help": "Remove a transaction",
-          "args": [
-            {
-              "id": "--id",
-              "kwargs": {
-                "help": "Transaction id",
-                "required": true
-              }
-            },
-            {
-              "id": "--date",
-              "kwargs": {
-                "required": true,
-                "help": "Transaction date"
-              }
-            }
-          ]
-        },
-        {
-          "name": "list",
-          "help": "List transactions",
-          "args": [
-            {
-              "id": "--type",
-              "kwargs": {
-                "help": "Transaction type to filter transactions"
-              }
-            },
-            {
-              "id": "--from",
-              "kwargs": {
-                "required": true,
-                "help": "Start date to filter transactions"
-              }
-            },
-            {
-              "id": "--to",
-              "kwargs": {
-                "required": true,
-                "help": "End date to filter transactions"
-              }
-            },
-            {
-              "id": "--tags",
-              "kwargs": {
-                "help": "Tags to filter transactions"
-              }
-            },
-            {
-              "id": "--amount",
-              "kwargs": {
-                "help": "Amount range to filter transactions"
-              }
-            }
-          ]
-        },
-        {
-          "name": "stats",
-          "help": "show different types of stats about transactions",
-          "args": [
-            {
-              "id": "--statstype",
-              "kwargs": {
-                "help": "Indicate what type of summary should be displayed",
-                "default": "overall_summary",
-                "choices": [
-                  "overall_summary"
+          "name": "txs",
+          "help": "Manage transactions",
+          "args": [],
+          "subparsers": {
+            "id": "action",
+            "required": true,
+            "subparsers_cfgs": [
+              {
+                "name": "add",
+                "help": "Add a transaction",
+                "args": [
+                  {
+                    "id": "--type",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Transaction type"
+                    }
+                  },
+                  {
+                    "id": "--date",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Transaction date"
+                    }
+                  },
+                  {
+                    "id": "--amount",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Transaction amount"
+                    }
+                  },
+                  {
+                    "id": "--tags",
+                    "kwargs": {
+                      "required": true,
+                      "help": "A list of tags describing the transaction"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "remove",
+                "help": "Remove a transaction",
+                "args": [
+                  {
+                    "id": "--id",
+                    "kwargs": {
+                      "help": "Transaction id",
+                      "required": true
+                    }
+                  },
+                  {
+                    "id": "--date",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Transaction date"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "list",
+                "help": "List transactions",
+                "args": [
+                  {
+                    "id": "--type",
+                    "kwargs": {
+                      "help": "Transaction type to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--from",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Start date to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--to",
+                    "kwargs": {
+                      "required": true,
+                      "help": "End date to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--tags",
+                    "kwargs": {
+                      "help": "Tags to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--amount",
+                    "kwargs": {
+                      "help": "Amount range to filter transactions"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "stats",
+                "help": "show different types of stats about transactions",
+                "args": [
+                  {
+                    "id": "--statstype",
+                    "kwargs": {
+                      "help": "Indicate what type of summary should be displayed",
+                      "default": "overall_summary",
+                      "choices": [
+                        "overall_summary"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "--draw",
+                    "kwargs": {
+                      "help": "Show the stats in a chart"
+                    }
+                  },
+                  {
+                    "id": "--type",
+                    "kwargs": {
+                      "help": "Transaction type to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--from",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Start date to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--to",
+                    "kwargs": {
+                      "required": true,
+                      "help": "End date to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--tags",
+                    "kwargs": {
+                      "help": "Tags to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--amount",
+                    "kwargs": {
+                      "help": "Amount range to filter transactions"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "edit",
+                "help": "Edit a transaction",
+                "args": [
+                  {
+                    "id": "--id",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Transaction id"
+                    }
+                  },
+                  {
+                    "id": "--type",
+                    "kwargs": {
+                      "help": "New transaction type"
+                    }
+                  },
+                  {
+                    "id": "--olddate",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Old transaction date"
+                    }
+                  },
+                  {
+                    "id": "--date",
+                    "kwargs": {
+                      "required": true,
+                      "help": "New transaction date"
+                    }
+                  },
+                  {
+                    "id": "--amount",
+                    "kwargs": {
+                      "help": "New transaction amount"
+                    }
+                  },
+                  {
+                    "id": "--tags",
+                    "kwargs": {
+                      "help": "New transaction tags"
+                    }
+                  }
                 ]
               }
-            },
-            {
-              "id": "--draw",
-              "kwargs": {
-                "help": "Show the stats in a chart"
-              }
-            },
-            {
-              "id": "--type",
-              "kwargs": {
-                "help": "Transaction type to filter transactions"
-              }
-            },
-            {
-              "id": "--from",
-              "kwargs": {
-                "required": true,
-                "help": "Start date to filter transactions"
-              }
-            },
-            {
-              "id": "--to",
-              "kwargs": {
-                "required": true,
-                "help": "End date to filter transactions"
-              }
-            },
-            {
-              "id": "--tags",
-              "kwargs": {
-                "help": "Tags to filter transactions"
-              }
-            },
-            {
-              "id": "--amount",
-              "kwargs": {
-                "help": "Amount range to filter transactions"
-              }
-            }
-          ]
+            ]
+          }
         },
         {
-          "name": "edit",
-          "help": "Edit a transaction",
-          "args": [
-            {
-              "id": "--id",
-              "kwargs": {
-                "required": true,
-                "help": "Transaction id"
+          "name": "tags",
+          "help": "Manage tags",
+          "args": [],
+          "subparsers": {
+            "id": "action",
+            "required": true,
+            "subparsers_cfgs": [
+              {
+                "name": "add",
+                "help": "Add a new tag to db",
+                "args": [
+                  {
+                    "id": "--concept",
+                    "kwargs": {
+                      "help": "The concept that is related to the tags"
+                    }
+                  },
+                  {
+                    "id": "--tags",
+                    "kwargs": {
+                      "help": "A | separated list of tags"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "edit",
+                "help": "Update the values of a an existing tag",
+                "args": [
+                  {
+                    "id": "--tagid",
+                    "kwargs": {
+                      "required": true,
+                      "help": "The tag identifier"
+                    }
+                  },
+                  {
+                    "id": "--concept",
+                    "kwargs": {
+                      "required": true,
+                      "help": "The concept that is related to the tags"
+                    }
+                  },
+                  {
+                    "id": "--tags",
+                    "kwargs": {
+                      "required": true,
+                      "help": "A | separated list of tags"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "remove",
+                "help": "Remove a given tag from db",
+                "args": [
+                  {
+                    "id": "--tagid",
+                    "kwargs": {
+                      "help": "The tag identifier"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "list",
+                "help": "List all tags in db",
+                "args": []
               }
-            },
-            {
-              "id": "--type",
-              "kwargs": {
-                "help": "New transaction type"
-              }
-            },
-            {
-              "id": "--olddate",
-              "kwargs": {
-                "required": true,
-                "help": "Old transaction date"
-              }
-            },
-            {
-              "id": "--date",
-              "kwargs": {
-                "required": true,
-                "help": "New transaction date"
-              }
-            },
-            {
-              "id": "--amount",
-              "kwargs": {
-                "help": "New transaction amount"
-              }
-            },
-            {
-              "id": "--tags",
-              "kwargs": {
-                "help": "New transaction tags"
-              }
-            }
-          ]
-        },
-        {
-          "name": "add_tag",
-          "help": "Add a new tag to db",
-          "args": [
-            {
-              "id": "--concept",
-              "kwargs": {
-                "help": "The concept that is related to the tags"
-              }
-            },
-            {
-              "id": "--tags",
-              "kwargs": {
-                "help": "A | separated list of tags"
-              }
-            }
-          ]
-        },
-        {
-          "name": "edit_tag",
-          "help": "Update the values of a an existing tag",
-          "args": [
-            {
-              "id": "--tagid",
-              "kwargs": {
-                "required": true,
-                "help": "The tag identifier"
-              }
-            },
-            {
-              "id": "--concept",
-              "kwargs": {
-                "required": true,
-                "help": "The concept that is related to the tags"
-              }
-            },
-            {
-              "id": "--tags",
-              "kwargs": {
-                "required": true,
-                "help": "A | separated list of tags"
-              }
-            }
-          ]
-        },
-        {
-          "name": "remove_tag",
-          "help": "Remove a given tag from db",
-          "args": [
-            {
-              "id": "--tagid",
-              "kwargs": {
-                "help": "The tag identifier"
-              }
-            }
-          ]
-        },
-        {
-          "name": "list_tags",
-          "help": "List all tags in db",
-          "args": []
+            ]
+          }
         }
       ]
     }

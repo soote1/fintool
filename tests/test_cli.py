@@ -5,9 +5,10 @@ import fintool.actions
 
 class TestCLI(unittest.TestCase):
 
-    def test_parse_add_cmd(self):
+    def test_parse_add_tx_cmd(self):
         expected = {
-            'cmd': 'add',
+            'cmd': 'txs',
+            'action': 'add',
             'type': 'some',
             'date': 'other',
             'amount': '12.12',
@@ -15,6 +16,7 @@ class TestCLI(unittest.TestCase):
         }
 
         cmd = [
+            "txs",
             "add",
             "--type",
             "some",
@@ -32,9 +34,14 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_parse_remove_cmd(self):
-        expected = {'cmd': 'remove', 'id': '1', 'date': '2020-01-01'}
+        expected = {
+            'cmd': 'txs',
+            'action': 'remove',
+            'id': '1',
+            'date': '2020-01-01'
+        }
 
-        cmd = ['remove', '--id', '1', '--date', '2020-01-01']
+        cmd = ['txs', 'remove', '--id', '1', '--date', '2020-01-01']
 
         cli = fintool.cli.CLI()
         actual = cli.parse_args(cmd)
@@ -43,15 +50,17 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_list_cmd(self):
         expected = {
-            'cmd': 'list',
+            'cmd': 'txs',
+            'action': 'list',
             'type': 'income',
             'tags': 'a,b,c',
             'amount': '12-32',
-            'from' : '2020-01-01',
+            'from': '2020-01-01',
             'to': '2020-02-01'
         }
 
         cmd = [
+            "txs",
             "list",
             "--type",
             "income",
@@ -72,7 +81,8 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_stats_cmd(self):
         expected = {
-            'cmd': 'stats',
+            'cmd': 'txs',
+            'action': 'stats',
             'statstype': 'overall_summary',
             'draw': 'pie',
             'type': 'income',
@@ -83,6 +93,7 @@ class TestCLI(unittest.TestCase):
         }
 
         cmd = [
+            "txs",
             "stats",
             "--statstype",
             "overall_summary",
@@ -107,7 +118,8 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_edit_cmd(self):
         expected = {
-            'cmd': 'edit',
+            'cmd': 'txs',
+            'action': 'edit',
             'id': 'some-id',
             'type': 'some-type',
             'olddate': '2020-01-01',
@@ -117,6 +129,7 @@ class TestCLI(unittest.TestCase):
         }
 
         cmd = [
+            "txs",
             "edit",
             "--id",
             "some-id",
@@ -142,8 +155,8 @@ class TestCLI(unittest.TestCase):
             fintool.actions.CreateTransaction,
             fintool.actions.SaveTransaction
         ]
-        expected_cmd = fintool.cli.Command("add", expected_actions, None)
-        args = {'cmd': 'add', 'other': None}
+        expected_cmd = fintool.cli.Command("txs.add", expected_actions, None)
+        args = {'cmd': 'txs', 'action': 'add', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -151,8 +164,12 @@ class TestCLI(unittest.TestCase):
 
     def test_create_remove_cmd(self):
         expected_actions = [fintool.actions.RemoveTransaction]
-        expected_cmd = fintool.cli.Command("remove", expected_actions, None)
-        args = {'cmd': 'remove', 'other': None}
+        expected_cmd = fintool.cli.Command(
+            "txs.remove",
+            expected_actions,
+            None
+        )
+        args = {'cmd': 'txs', 'action': 'remove', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -165,8 +182,8 @@ class TestCLI(unittest.TestCase):
             fintool.actions.PrintTransactions
         ]
 
-        expected_cmd = fintool.cli.Command("list", expected_actions, None)
-        args = {'cmd': 'list', 'other': None}
+        expected_cmd = fintool.cli.Command("txs.list", expected_actions, None)
+        args = {'cmd': 'txs', 'action': 'list', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -181,9 +198,9 @@ class TestCLI(unittest.TestCase):
             fintool.actions.CreateTransaction,
             fintool.actions.UpdateTransaction
         ]
-        expected_cmd = fintool.cli.Command("edit", expected_actions, None)
+        expected_cmd = fintool.cli.Command("txs.edit", expected_actions, None)
 
-        args = {'cmd': 'edit', 'other': None}
+        args = {'cmd': 'txs', 'action': 'edit', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -202,9 +219,9 @@ class TestCLI(unittest.TestCase):
             fintool.actions.CreateTag,
             fintool.actions.AddTag
         ]
-        expected_cmd = fintool.cli.Command("add_tag", expected_actions, None)
+        expected_cmd = fintool.cli.Command("tags.add", expected_actions, None)
 
-        args = {'cmd': 'add_tag', 'other': None}
+        args = {'cmd': 'tags', 'action': 'add', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -215,9 +232,9 @@ class TestCLI(unittest.TestCase):
             fintool.actions.CreateTag,
             fintool.actions.EditTag
         ]
-        expected_cmd = fintool.cli.Command("edit_tag", expected_actions, None)
+        expected_cmd = fintool.cli.Command("tags.edit", expected_actions, None)
 
-        args = {'cmd': 'edit_tag', 'other': None}
+        args = {'cmd': 'tags', 'action': 'edit', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -228,12 +245,12 @@ class TestCLI(unittest.TestCase):
             fintool.actions.RemoveTag
         ]
         expected_cmd = fintool.cli.Command(
-            "remove_tag",
+            "tags.remove",
             expected_actions,
             None
         )
 
-        args = {'cmd': 'remove_tag', 'other': None}
+        args = {'cmd': 'tags', 'action': 'remove', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -245,12 +262,12 @@ class TestCLI(unittest.TestCase):
             fintool.actions.PrintTags
         ]
         expected_cmd = fintool.cli.Command(
-            "list_tags",
+            "tags.list",
             expected_actions,
             None
         )
 
-        args = {'cmd': 'list_tags', 'other': None}
+        args = {'cmd': 'tags', 'action': 'list', 'other': None}
         actual = fintool.cli.CLI().create_cmd(args)
 
         self.assertEqual(actual.cmd, expected_cmd.cmd)
@@ -258,13 +275,15 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_add_tag_cmd(self):
         expected = {
-            'cmd': 'add_tag',
+            'cmd': 'tags',
+            'action': 'add',
             'concept': 'some_concept',
             'tags': 'a|b|c'
         }
 
         cmd = [
-            "add_tag",
+            "tags",
+            "add",
             "--concept",
             "some_concept",
             "--tags",
@@ -278,14 +297,16 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_edit_tag_cmd(self):
         expected = {
-            'cmd': 'edit_tag',
+            'cmd': 'tags',
+            'action': 'edit',
             'concept': 'some_concept',
             'tags': 'a|b|c',
             'tagid': 'some_id'
         }
 
         cmd = [
-            "edit_tag",
+            "tags",
+            "edit",
             "--concept",
             "some_concept",
             "--tags",
@@ -301,12 +322,14 @@ class TestCLI(unittest.TestCase):
 
     def test_parse_remove_tag_cmd(self):
         expected = {
-            'cmd': 'remove_tag',
+            'cmd': 'tags',
+            'action': 'remove',
             'tagid': 'some_id'
         }
 
         cmd = [
-            "remove_tag",
+            "tags",
+            "remove",
             "--tagid",
             "some_id"
         ]
@@ -317,13 +340,9 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_parse_list_tags_cmd(self):
-        expected = {
-            'cmd': 'list_tags',
-        }
+        expected = {'cmd': 'tags', 'action': 'list'}
 
-        cmd = [
-            "list_tags",
-        ]
+        cmd = ["tags", "list"]
 
         cli = fintool.cli.CLI()
         actual = cli.parse_args(cmd)
