@@ -116,7 +116,7 @@ class GmailClient:
             with open('token.json', 'w') as token:
                 token.write(credentials.to_json())
 
-        return creds
+        return credentials
 
     @staticmethod
     def base64_url_decode(inp):
