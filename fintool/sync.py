@@ -8,7 +8,12 @@ import time
 from fintool.db import DbFactory, MissingCollectionError
 from fintool.logging import LoggingHelper
 from fintool.tagging import TagManager, NoTagsError
-from fintool.email import build_client, build_parser, MissingFieldError
+from fintool.email import (
+    build_client,
+    build_parser,
+    MissingFieldError,
+    TransactionEmail
+)
 from fintool.transac import Transaction, TransactionManager
 
 
@@ -282,3 +287,27 @@ class SyncManager:
             pass  # the collection doesn't exists the first time
 
         self.save_last_sync(last_sync, collection)
+
+    def load_untagged_transactions(self):
+        """
+        Load untagged transactions from db and return a list of
+        TransactionEmail instances.
+        """
+        records = self._db.get_records(self.UNTAGGED_COLLECTION)
+        transaction_emails = []
+        for record in records:
+            transaction_emails.append(TransactionEmail.from_dict(record))
+
+        return transaction_emails
+
+    def create_concepts_set(self, transaction_emails):
+        """
+        Process a list of TransactionEmail instances to generate a unique
+        set of concepts.
+        """
+        concepts_set = set()
+
+        for transaction_email in transaction_emails:
+            concepts_set.add(transaction_email.concept)
+
+        return concepts_set
