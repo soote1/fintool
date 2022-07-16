@@ -8,6 +8,7 @@ from fintool.transac import Transaction, TransactionManager
 from fintool.logging import LoggingHelper
 from fintool.stats import StatsHelper
 from fintool.tagging import Tag, TagManager
+from fintool.sync import SyncManager, SyncDetails
 
 
 class Error(Exception):
@@ -379,3 +380,23 @@ class PrintTags(Action):
         """
         for tag in data[self.TAGS]:
             print(tag)
+
+
+class SyncTransactions(Action):
+    """
+    An action to download transactions from an email provider.
+    """
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Download transactions from an email provider using the sync manager.
+        """
+        sync_manager = SyncManager()
+        sync_details = SyncDetails('gmail', 'heybanco', 'AlertasHeyBanco', '')
+        sync_manager.sync_transactions(sync_details)
