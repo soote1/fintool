@@ -42,6 +42,7 @@ REMOVE_TX_CMD = "txs.remove"
 LIST_TX_CMD = "txs.list"
 STATS_TX_CMD = "txs.stats"
 EDIT_TX_CMD = "txs.edit"
+SYNC_TXS_CMD = 'txs.sync'
 ADD_TAG_CMD = 'tags.add'
 EDIT_TAG_CMD = 'tags.edit'
 REMOVE_TAG_CMD = 'tags.remove'
@@ -134,6 +135,7 @@ SUPPORTED_CMDS = {
     LIST_TX_CMD: [CreateFilters, GetTransactions, PrintTransactions],
     STATS_TX_CMD: [CreateFilters, GetTransactions, CreateStats, ShowStats],
     EDIT_TX_CMD: [CreateTransaction, UpdateTransaction],
+    SYNC_TXS_CMD: [],
     ADD_TAG_CMD: [CreateTag, AddTag],
     EDIT_TAG_CMD: [CreateTag, EditTag],
     REMOVE_TAG_CMD: [RemoveTag],

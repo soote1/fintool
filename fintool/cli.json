@@ -204,6 +204,11 @@
                     }
                   }
                 ]
+              },
+              {
+                "name": "sync",
+                "help": "Sync transactions from email provider",
+                "args": []
               }
             ]
           }
