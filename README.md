@@ -24,6 +24,7 @@ positional arguments:
     list                List transactions
     stats               show different types of stats about transactions
     edit                Edit a transaction
+    sync                Sync transactions from email provider
 
 optional arguments:
   -h, --help            show this help message and exit
