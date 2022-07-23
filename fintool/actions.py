@@ -397,6 +397,13 @@ class SyncTransactions(Action):
         """
         Download transactions from an email provider using the sync manager.
         """
+        try:
+            bank = data['bank']
+            mail_box = data['mailbox']
+            provider = data['provider']
+        except KeyError as e:
+            raise ActionError(f'Missing required input element: {e}')
+
         sync_manager = SyncManager()
-        sync_details = SyncDetails('gmail', 'heybanco', 'AlertasHeyBanco', '')
+        sync_details = SyncDetails(provider, bank, mail_box, '')
         sync_manager.sync_transactions(sync_details)

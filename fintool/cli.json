@@ -208,7 +208,29 @@
               {
                 "name": "sync",
                 "help": "Sync transactions from email provider",
-                "args": []
+                "args": [
+                  {
+                    "id": "--bank",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Name of the bank that generates transaction emails"
+                    }
+                  },
+                  {
+                    "id": "--mailbox",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Name of the mailbox containing the transactions"
+                    }
+                  },
+                  {
+                    "id": "--provider",
+                    "kwargs": {
+                      "required": true,
+                      "help": "Name of the email provider"
+                    }
+                  }
+                ]
               }
             ]
           }
