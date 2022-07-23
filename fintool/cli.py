@@ -20,7 +20,7 @@ from fintool.actions import (
     EditTag,
     RemoveTag,
     PrintTags,
-    SyncTransactions
+    SyncController
 )
 from fintool.logging import LoggingHelper
 
@@ -136,7 +136,7 @@ SUPPORTED_CMDS = {
     LIST_TX_CMD: [CreateFilters, GetTransactions, PrintTransactions],
     STATS_TX_CMD: [CreateFilters, GetTransactions, CreateStats, ShowStats],
     EDIT_TX_CMD: [CreateTransaction, UpdateTransaction],
-    SYNC_TXS_CMD: [SyncTransactions],
+    SYNC_TXS_CMD: [SyncController],
     ADD_TAG_CMD: [CreateTag, AddTag],
     EDIT_TAG_CMD: [CreateTag, EditTag],
     REMOVE_TAG_CMD: [RemoveTag],

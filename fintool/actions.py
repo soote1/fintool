@@ -382,6 +382,27 @@ class PrintTags(Action):
             print(tag)
 
 
+class SyncController(Action):
+    """An action to perform sync operations."""
+
+    def __init__(self):
+        """Initialize instance."""
+
+    def exec(self, data):
+        """Run corresponding action based in provided cli args."""
+
+        if 'show' in data:
+            pass
+        elif 'untagged' in data:
+            pass
+        elif 'commit' in data:
+            pass
+        else:
+            action = SyncTransactions()
+
+        action.exec(data)
+
+
 class SyncTransactions(Action):
     """
     An action to download transactions from an email provider.
