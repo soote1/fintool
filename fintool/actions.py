@@ -392,7 +392,7 @@ class SyncController(Action):
         """Run corresponding action based in provided cli args."""
 
         if 'show' in data:
-            pass
+            action = ShowSyncTransactions()
         elif 'untagged' in data:
             pass
         elif 'commit' in data:
@@ -428,3 +428,20 @@ class SyncTransactions(Action):
         sync_manager = SyncManager()
         sync_details = SyncDetails(provider, bank, mail_box, '')
         sync_manager.sync_transactions(sync_details)
+
+
+class ShowSyncTransactions(Action):
+    """An action to show the contents of the sync db."""
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """Load the contents of the sync db and print them in stdout."""
+        sync_manager = SyncManager()
+        pending_transactions = sync_manager.load_sync_transactions()
+        for t in pending_transactions:
+            print(t.serialize())

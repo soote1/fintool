@@ -61,6 +61,30 @@ class TaggingResult:
         self.untagged = untagged
 
 
+class TaggedTransaction:
+    """
+    A class to define a tagged transaction.
+    """
+    def __init__(self, **kwargs):
+        self.tags = kwargs.get('tags')
+        self.concept = kwargs.get('concept')
+        self.email_id = kwargs.get('email_id')
+        self.date = kwargs.get('date')
+        self.amount = kwargs.get('amount')
+
+    def serialize(self):
+        """
+        Convert instance into a dictionary.
+        """
+        return {
+            'tags': self.tags,
+            'concpet': self.concept,
+            'email_id': self.email_id,
+            'date': self.date,
+            'amount': self.amount
+        }
+
+
 class LastSync:
     """
     A class to represent the last sync date.
@@ -311,3 +335,14 @@ class SyncManager:
             concepts_set.add(transaction_email.concept)
 
         return concepts_set
+
+    def load_sync_transactions(self):
+        """
+        Load sync transactions from db and return a list.
+        """
+        records = self._db.get_records(self.SYNC_COLLECTION)
+        pending_transactions = []
+        for record in records:
+            pending_transactions.append(TaggedTransaction(**record))
+
+        return pending_transactions

@@ -212,22 +212,30 @@
                   {
                     "id": "--bank",
                     "kwargs": {
-                      "required": true,
+                      "required": false,
                       "help": "Name of the bank that generates transaction emails"
                     }
                   },
                   {
                     "id": "--mailbox",
                     "kwargs": {
-                      "required": true,
+                      "required": false,
                       "help": "Name of the mailbox containing the transactions"
                     }
                   },
                   {
                     "id": "--provider",
                     "kwargs": {
-                      "required": true,
+                      "required": false,
                       "help": "Name of the email provider"
+                    }
+                  },
+                  {
+                    "id": "--show",
+                    "kwargs": {
+                      "required": false,
+                      "help": "Print transaction in sync db (to be committed)",
+                      "action": "store_true"
                     }
                   }
                 ]
