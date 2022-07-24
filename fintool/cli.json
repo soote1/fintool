@@ -237,6 +237,14 @@
                       "help": "Print transaction in sync db (to be committed)",
                       "action": "store_true"
                     }
+                  },
+                  {
+                    "id": "--untagged",
+                    "kwargs": {
+                      "required": false,
+                      "help": "Print untagged transactions",
+                      "action": "store_true"
+                    }
                   }
                 ]
               }
