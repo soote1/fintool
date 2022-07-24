@@ -397,6 +397,8 @@ class SyncController(Action):
             action = ShowUntaggedTransactions()
         elif data['concepts']:
             action = ShowConcepts()
+        elif data['commit']:
+            action = CommitTransactions()
         else:
             action = SyncTransactions()
 
@@ -481,3 +483,19 @@ class ShowConcepts(Action):
         concepts_set = sync_manager.create_concepts_set()
         for concept in concepts_set:
             print(concept)
+
+
+class CommitTransactions(Action):
+    """An action to move transactions from sync db to main db."""
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """Use the sync manager to commit tagged transactions.
+        """
+        sync_manager = SyncManager()
+        sync_manager.commit_transactions()

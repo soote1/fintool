@@ -347,3 +347,17 @@ class SyncManager:
             pending_transactions.append(TaggedTransaction(**record))
 
         return pending_transactions
+
+    def commit_transactions(self):  # TODO: take care of duplicates
+        """Move transactions from sync db to transactions db.
+        """
+        transaction_manager = TransactionManager()
+        for tagged_transaction in self.load_sync_transactions():
+            transaction = Transaction(
+                'income',
+                tagged_transaction.tags,
+                tagged_transaction.date,
+                tagged_transaction.amount,
+                t_email_id=tagged_transaction.email_id
+            )
+            transaction_manager.save_transaction(transaction)

@@ -253,6 +253,14 @@
                       "help": "Print unique set of concepts from untagged transactions",
                       "action": "store_true"
                     }
+                  },
+                  {
+                    "id": "--commit",
+                    "kwargs": {
+                      "required": false,
+                      "help": "Move transaction from sync db to main db",
+                      "action": "store_true"
+                    }
                   }
                 ]
               }
