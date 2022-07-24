@@ -324,12 +324,13 @@ class SyncManager:
 
         return transaction_emails
 
-    def create_concepts_set(self, transaction_emails):
+    def create_concepts_set(self):
         """
         Process a list of TransactionEmail instances to generate a unique
         set of concepts.
         """
         concepts_set = set()
+        transaction_emails = self.load_untagged_transactions()
 
         for transaction_email in transaction_emails:
             concepts_set.add(transaction_email.concept)

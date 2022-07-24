@@ -395,8 +395,8 @@ class SyncController(Action):
             action = ShowSyncTransactions()
         elif data['untagged']:
             action = ShowUntaggedTransactions()
-        elif data['commit']:
-            pass
+        elif data['concepts']:
+            action = ShowConcepts()
         else:
             action = SyncTransactions()
 
@@ -457,8 +457,27 @@ class ShowUntaggedTransactions(Action):
         super().__init__()
 
     def exec(self, data):
-        """Load the contents of the sync db and print them in stdout."""
+        """Load the contents of the untagged db and print them in stdout."""
         sync_manager = SyncManager()
         untagged_transactions = sync_manager.load_untagged_transactions()
         for t in untagged_transactions:
             print(t.serialize())
+
+
+class ShowConcepts(Action):
+    """An action to show the concepts from untagged transactions."""
+    def __init__(self):
+        """
+        Initialize instance.
+        """
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """Load the contents from untagged transactions db, generate the unique
+        set of concepts and print them in stdout.
+        """
+        sync_manager = SyncManager()
+        concepts_set = sync_manager.create_concepts_set()
+        for concept in concepts_set:
+            print(concept)

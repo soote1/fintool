@@ -245,6 +245,14 @@
                       "help": "Print untagged transactions",
                       "action": "store_true"
                     }
+                  },
+                  {
+                    "id": "--concepts",
+                    "kwargs": {
+                      "required": false,
+                      "help": "Print unique set of concepts from untagged transactions",
+                      "action": "store_true"
+                    }
                   }
                 ]
               }
