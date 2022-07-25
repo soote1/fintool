@@ -243,7 +243,7 @@ class TransactionEmail:
         self.date = date
         self.amount = amount
         self.email_id = email_id
-        self.tags = tags
+        self.tags = set(tags.split('|')) if tags else tags
 
     @classmethod
     def from_dict(cls, data):
@@ -270,7 +270,7 @@ class TransactionEmail:
             self.DATE: self.date,
             self.AMOUNT: self.amount,
             self.EMAIL_ID: self.email_id,
-            self.TAGS: self.tags
+            self.TAGS: '|'.join(self.tags) if self.tags else self.tags
         }
 
 

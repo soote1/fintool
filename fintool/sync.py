@@ -77,7 +77,7 @@ class TaggedTransaction:
         Convert instance into a dictionary.
         """
         return {
-            'tags': self.tags,
+            'tags': '|'.join(self.tags),
             'concpet': self.concept,
             'email_id': self.email_id,
             'date': self.date,
