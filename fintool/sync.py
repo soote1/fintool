@@ -361,3 +361,19 @@ class SyncManager:
                 t_email_id=tagged_transaction.email_id
             )
             transaction_manager.save_transaction(transaction)
+
+    def tag_transactions(self):
+        """
+        Try to tag transactions from untagged db and save them in sync db.
+        """
+        untagged_transactions = self.load_untagged_transactions()
+        tagging_result = self.tag_transaction_emails(untagged_transactions)
+        self.save_transaction_emails(
+            tagging_result.tagged,
+            self.SYNC_COLLECTION
+        )
+        self._db.remove_collection(self.UNTAGGED_COLLECTION)
+        self.save_transaction_emails(
+            tagging_result.untagged,
+            self.UNTAGGED_COLLECTION
+        )

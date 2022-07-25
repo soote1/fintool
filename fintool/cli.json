@@ -261,6 +261,14 @@
                       "help": "Move transaction from sync db to main db",
                       "action": "store_true"
                     }
+                  },
+                  {
+                    "id": "--tag",
+                    "kwargs": {
+                      "required": false,
+                      "help": "Try to tag transactions from untagged db",
+                      "action": "store_true"
+                    }
                   }
                 ]
               }

@@ -399,6 +399,8 @@ class SyncController(Action):
             action = ShowConcepts()
         elif data['commit']:
             action = CommitTransactions()
+        elif data['tag']:
+            action = TagTransactions()
         else:
             action = SyncTransactions()
 
@@ -499,3 +501,14 @@ class CommitTransactions(Action):
         """
         sync_manager = SyncManager()
         sync_manager.commit_transactions()
+
+class TagTransactions(Action):
+    """An action to tag untagged transactions and store them in sync db.
+    """
+    def __init__(self):
+        """Initialize instance."""
+
+    def exec(self, data):
+        """Use the sync manager to tag transactions from untagged db."""
+        sync_manager = SyncManager()
+        sync_manager.tag_transactions()

@@ -249,4 +249,8 @@ class CsvDb(AbstractDb):
         pathlib.Path(collection_tmp_file).replace(collection_file)
 
 
+    def remove_collection(self, collection_name):
+        collection_file, _ = self.create_collection_objects(collection_name)
+        collection_file.unlink()
+
 SUPPORTED_TYPES = {'csv': CsvDb}
