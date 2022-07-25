@@ -139,7 +139,7 @@ class SyncManager:
         transaction email.
         """
         return Transaction(
-            'income',
+            'outcome',
             transaction_email.tags,
             transaction_email.date,
             transaction_email.amount
