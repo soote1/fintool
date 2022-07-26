@@ -164,7 +164,6 @@ class SyncManager:
         """
         try:
             last_sync = self.get_last_sync(self.LAST_SYNC)
-            last_sync = last_sync.last_sync + 1 if last_sync else 0
         except MissingCollectionError:
             last_sync = None  # the collection doesn't exists in first run
 
@@ -174,10 +173,7 @@ class SyncManager:
             sync_details.mail_boxes,
             last_sync
         )
-        # we might need to decrease this to catch missing emails in next sync
-        # or maybe we just need to calculate this value before fetch
-        if not last_sync:
-            last_sync = int(time.time())
+        last_sync = int(time.time())  # calculate timestamp for next sync
         try:
             tagging_result = self.tag_transaction_emails(transaction_emails)
             self.save_transaction_emails(
@@ -190,7 +186,7 @@ class SyncManager:
             )
         except NoTagsError:
             self._logger.debug('No tags available in db')
-            # mark transactions as untaged
+            # mark transactions as untagged
             self.save_transaction_emails(
                 transaction_emails,
                 self.UNTAGGED_COLLECTION
