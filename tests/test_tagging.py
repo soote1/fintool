@@ -2,11 +2,11 @@
 Set of unit tests for the tagging module.
 """
 import unittest
-import pathlib
 
 from fintool.tagging import Tag, TagManager
 from fintool.db import CsvDb
-from tests.fixtures.util import remove_dir
+from tests.fixtures.util import remove_dir, TEST_DB_PATH
+
 
 class TestTagging(unittest.TestCase):
     """
@@ -15,7 +15,7 @@ class TestTagging(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.DB_DIR = pathlib.Path('~/.fintool').expanduser()
+        cls.DB_DIR = TEST_DB_PATH
         cls.TAGS_FILE = cls.DB_DIR.joinpath("tags.csv")
         cls.SAMPLE_TAGS = [
             Tag(concept='a', tags_str='a|b|c'),

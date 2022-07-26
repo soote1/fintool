@@ -1,3 +1,10 @@
+import os
+import pathlib
+
+
+PARENT_DIR = pathlib.Path(os.path.dirname(os.path.realpath(__file__))).parent
+TEST_DB_PATH = PARENT_DIR.joinpath('.fintool/')
+
 def remove_dir(dir_path):
     """
     Recursively remove directory.

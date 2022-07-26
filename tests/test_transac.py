@@ -1,8 +1,7 @@
-import pathlib
 import unittest
 
 from fintool.transac import Transaction, TransactionManager
-from tests.fixtures.util import remove_dir
+from tests.fixtures.util import remove_dir, TEST_DB_PATH
 
 
 class TestTransactions(unittest.TestCase):
@@ -10,7 +9,7 @@ class TestTransactions(unittest.TestCase):
     """
     @classmethod
     def setUpClass(cls):
-        cls.DB_DIR = pathlib.Path('~/.fintool').expanduser()
+        cls.DB_DIR = TEST_DB_PATH
         cls.RECORDS_FILE = cls.DB_DIR.joinpath("records.csv")
 
     def setUp(self):
