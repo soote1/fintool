@@ -44,7 +44,7 @@ class CreateTransaction(Action):
         """
         self._logger.debug('running action with: %s', data)
         try:
-            data["transaction"] = Transaction.from_dict(data)
+            data["transaction"] = Transaction(**data)
         except Exception as exception:
             raise ActionError(exception)
 
@@ -58,7 +58,8 @@ class SaveTransaction(Action):
         super().__init__()
 
     def exec(self, data):
-        """Retrieve a transaction from data, serialize it and save it in fintool db.
+        """Retrieve a transaction from data, serialize it and save it in
+        fintool db.
 
         Args:
             data (dict): A dictionary containing a transaction.
@@ -501,6 +502,7 @@ class CommitTransactions(Action):
         """
         sync_manager = SyncManager()
         sync_manager.commit_transactions()
+
 
 class TagTransactions(Action):
     """An action to tag untagged transactions and store them in sync db.

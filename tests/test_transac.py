@@ -24,7 +24,7 @@ class TestTransactions(unittest.TestCase):
             'tags': {'a', 'b', 'c'}
         }
 
-        actual = Transaction.from_dict({
+        actual = Transaction(**{
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
@@ -43,7 +43,7 @@ class TestTransactions(unittest.TestCase):
         other tests already validate db contents.
         """
 
-        actual = Transaction.from_dict({
+        actual = Transaction(**{
             'type': 'income',
             'date': '2022-01-01',
             'amount': '12.3',
@@ -56,14 +56,14 @@ class TestTransactions(unittest.TestCase):
         from_str = '2022-01-01'
         to_str = '2023-01-01'
         expected = [
-            Transaction.from_dict({
+            Transaction(**{
                 'id': '',
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
                 'tags': 'a|b|c'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'id': '',
                 'type': 'income',
                 'date': '2023-01-01',
@@ -72,7 +72,7 @@ class TestTransactions(unittest.TestCase):
             })
         ]
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -80,7 +80,7 @@ class TestTransactions(unittest.TestCase):
             })
         )
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'income',
                 'date': '2023-01-01',
                 'amount': '121.3',
@@ -119,7 +119,7 @@ class TestTransactions(unittest.TestCase):
         from_str = '2023-01-01'
         to_str = '2023-01-01'
         expected = [
-            Transaction.from_dict({
+            Transaction(**{
                 'id': '',
                 'type': 'outcome',
                 'date': '2023-01-01',
@@ -128,7 +128,7 @@ class TestTransactions(unittest.TestCase):
             })
         ]
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -136,7 +136,7 @@ class TestTransactions(unittest.TestCase):
             })
         )
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2023-01-01',
                 'amount': '121.3',
@@ -179,7 +179,7 @@ class TestTransactions(unittest.TestCase):
         from_str = '2022-01-01'
         to_str = '2023-01-01'
         expected = [
-            Transaction.from_dict({
+            Transaction(**{
                 'id': '',
                 'type': 'outcome',
                 'date': '2023-01-01',
@@ -188,7 +188,7 @@ class TestTransactions(unittest.TestCase):
             })
         ]
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -196,7 +196,7 @@ class TestTransactions(unittest.TestCase):
             })
         )
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2023-01-01',
                 'amount': '121.3',
@@ -241,7 +241,7 @@ class TestTransactions(unittest.TestCase):
         expected = []
 
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'income',
                 'date': '2022-01-01',
                 'amount': '12.3',
@@ -261,7 +261,7 @@ class TestTransactions(unittest.TestCase):
         from_str = '2022-01-01'
         to_str = '2022-02-02'
         expected = [
-            Transaction.from_dict({
+            Transaction(**{
                 'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
                 'type': 'income',
                 'date': '2022-01-01',
@@ -271,7 +271,7 @@ class TestTransactions(unittest.TestCase):
         ]
 
         self.transaction_manager.save_transaction(
-            Transaction.from_dict({
+            Transaction(**{
                 'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
                 'type': 'outcome',
                 'date': '2022-02-02',
@@ -282,7 +282,7 @@ class TestTransactions(unittest.TestCase):
 
         self.transaction_manager.update_transaction(
             to_str,
-            Transaction.from_dict({
+            Transaction(**{
                 'id': '9a80f28cbf5a4da0bcb1a4d6eed1796d',
                 'type': 'income',
                 'date': '2022-01-01',

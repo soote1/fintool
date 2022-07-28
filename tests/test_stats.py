@@ -9,61 +9,61 @@ class TestStats(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.transactions = [
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2022-01-01',
                 'amount': '200.5',
                 'tags': 'food|uber'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2022-01-02',
                 'amount': '300.5',
                 'tags': 'food|uber'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2022-02-01',
                 'amount': '400.5',
                 'tags': 'food|uber'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2022-02-02',
                 'amount': '200.5',
                 'tags': 'food|fresko'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2022-03-01',
                 'amount': '500',
                 'tags': 'transportation|uber'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2022-03-02',
                 'amount': '200.5',
                 'tags': 'transportation|uber'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2023-01-01',
                 'amount': '12',
                 'tags': 'food|fresko'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2023-01-02',
                 'amount': '400',
                 'tags': 'food|fresko'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2023-02-01',
                 'amount': '500',
                 'tags': 'food|fresko'
             }),
-            Transaction.from_dict({
+            Transaction(**{
                 'type': 'outcome',
                 'date': '2023-02-02',
                 'amount': '100.5',

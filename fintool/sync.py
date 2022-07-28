@@ -65,23 +65,29 @@ class TaggedTransaction:
     """
     A class to define a tagged transaction.
     """
+    TAGS = 'tags'
+    CONCEPT = 'concept'
+    EMAIL_ID = 'email_id'
+    DATE = 'date'
+    AMOUNT = 'amount'
+
     def __init__(self, **kwargs):
-        self.tags = kwargs.get('tags')
-        self.concept = kwargs.get('concept')
-        self.email_id = kwargs.get('email_id')
-        self.date = kwargs.get('date')
-        self.amount = kwargs.get('amount')
+        self.tags = kwargs.get(self.TAGS)
+        self.concept = kwargs.get(self.CONCEPT)
+        self.email_id = kwargs.get(self.EMAIL_ID)
+        self.date = kwargs.get(self.DATE)
+        self.amount = kwargs.get(self.AMOUNT)
 
     def serialize(self):
         """
         Convert instance into a dictionary.
         """
         return {
-            'tags': self.tags,
-            'concpet': self.concept,
-            'email_id': self.email_id,
-            'date': self.date,
-            'amount': self.amount
+            self.TAGS: self.tags,
+            self.CONCEPT: self.concept,
+            self.EMAIL_ID: self.email_id,
+            self.DATE: self.date,
+            self.AMOUNT: self.amount
         }
 
 
@@ -139,10 +145,10 @@ class SyncManager:
         transaction email.
         """
         return Transaction(
-            'outcome',
-            transaction_email.tags,
-            transaction_email.date,
-            transaction_email.amount
+            type='outcome',
+            tags=transaction_email.tags,
+            date=transaction_email.date,
+            amount=transaction_email.amount
         )
 
     def create_transaction_list_from_transaction_emails(
@@ -351,11 +357,11 @@ class SyncManager:
         transaction_manager = TransactionManager()
         for tagged_transaction in self.load_sync_transactions():
             transaction = Transaction(
-                'income',
-                tagged_transaction.tags,
-                tagged_transaction.date,
-                tagged_transaction.amount,
-                t_email_id=tagged_transaction.email_id
+                type='outcome',
+                tags=tagged_transaction.tags,
+                date=tagged_transaction.date,
+                amount=tagged_transaction.amount,
+                email_id=tagged_transaction.email_id
             )
             transaction_manager.save_transaction(transaction)
         self._db.remove_collection(self.SYNC_COLLECTION)
