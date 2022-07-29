@@ -130,14 +130,14 @@ class SyncManager:
     UNTAGGED_COLLECTION = 'untagged'
     LAST_SYNC = 'lastsync'
 
-    def __init__(self):
+    def __init__(self, db=None):
         """
         Initialize instance.
         """
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         self._tag_manager = TagManager()
         self._transaction_manager = TransactionManager()
-        self._db = DbFactory.get_db('csv')()
+        self._db = db if db else DbFactory.get_db('csv')()
 
     def create_transaction_from_transaction_email(self, transaction_email):
         """

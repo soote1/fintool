@@ -131,12 +131,12 @@ class TransactionManager:
     """
     TRANSACTION_COLLECTION = 'records'
 
-    def __init__(self):
+    def __init__(self, db=None):
         """
         Initialize instance.
         """
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        self._db = DbFactory.get_db('csv')()
+        self._db = db if db else DbFactory.get_db('csv')()
 
     def calculate_collection_from_date(self, date_str):
         """
@@ -194,7 +194,6 @@ class TransactionManager:
             transaction (Transaction): object to be saved in db
         """
         # TODO: need to get db type from cfg
-        # TODO: need to inject db object so that we can test with mock data
         self._logger.debug('saving transaction in db')
         collection = self.calculate_collection_from_date(transaction.date)
         self._db.add_record(

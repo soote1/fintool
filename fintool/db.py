@@ -114,9 +114,9 @@ class CsvDb(AbstractDb):
         collection_file, _ = self.create_collection_objects(collection)
         file_exists = collection_file.is_file()
         with collection_file.open(
-            'a',
+            mode='a+',
             newline='',
-            encoding='utf-8',
+            encoding='utf-8'
         ) as csvfile:
             field_names = record.keys()
             writer = csv.DictWriter(csvfile, fieldnames=field_names)
@@ -138,7 +138,7 @@ class CsvDb(AbstractDb):
         )
         try:
             with collection_file.open(
-                'r',
+                mode='r',
                 newline='',
                 encoding='utf-8',
             ) as records_csv_file:
@@ -182,7 +182,7 @@ class CsvDb(AbstractDb):
         collection_file, _ = self.create_collection_objects(collection)
         try:
             with collection_file.open(
-                'r',
+                mode='r',
                 newline='',
                 encoding='utf-8',
             ) as csvfile:
@@ -211,7 +211,7 @@ class CsvDb(AbstractDb):
         )
         try:
             with collection_file.open(
-                'r',
+                mode='r',
                 newline='',
                 encoding='utf-8',
             ) as records_csv_file:
@@ -221,7 +221,7 @@ class CsvDb(AbstractDb):
                 field_names = reader.fieldnames if reader.fieldnames else []
 
                 with collection_tmp_file.open(
-                    'w',
+                    mode='w',
                     encoding='utf-8',
                     newline=''
                 ) as tmp_csv_file:

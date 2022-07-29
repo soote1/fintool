@@ -78,11 +78,11 @@ class TagManager:
     """
     TAGS_COLLECTION = 'tags'
 
-    def __init__(self):
+    def __init__(self, db=None):
         """
         Initialize tag manager.
         """
-        self._db = DbFactory.get_db('csv')()
+        self._db = db if db else DbFactory.get_db('csv')()
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         self._tags = None
 

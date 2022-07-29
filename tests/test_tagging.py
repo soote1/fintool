@@ -22,13 +22,15 @@ class TestTagging(unittest.TestCase):
             Tag(concept='b', tags_str='b|c|d'),
             Tag(concept='c', tags_str='c|d|e')
         ]
+        cls.FILE_DB = CsvDb(homedir=TEST_DB_PATH)
+        cls.TAGS_COLLECTION = 'tags'
 
     def setUp(self):
         """
         Clean database on each test execution.
         """
         remove_dir(self.DB_DIR)
-        self.tag_manager = TagManager()
+        self.tag_manager = TagManager(db=self.FILE_DB)
 
     def add_tags(self, tags):
         """
@@ -87,8 +89,7 @@ class TestTagging(unittest.TestCase):
         tag = Tag(concept='a', tags_str='a|b|c')
         expected = tag.serialize()
         self.tag_manager.add_tag(tag)
-        db = CsvDb()
-        actual = db.get_records('tags')
+        actual = self.FILE_DB.get_records(self.TAGS_COLLECTION)
 
         self.assertTrue(len(actual) == 1)
         self.assertTrue(actual[0] == expected)
