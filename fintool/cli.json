@@ -231,10 +231,10 @@
                     }
                   },
                   {
-                    "id": "--show",
+                    "id": "--pending",
                     "kwargs": {
                       "required": false,
-                      "help": "Print transaction in sync db (to be committed)",
+                      "help": "Print transaction from pending db",
                       "action": "store_true"
                     }
                   },
@@ -258,7 +258,7 @@
                     "id": "--commit",
                     "kwargs": {
                       "required": false,
-                      "help": "Move transaction from sync db to main db",
+                      "help": "Move transaction from pending db to main db",
                       "action": "store_true"
                     }
                   },

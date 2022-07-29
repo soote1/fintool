@@ -126,7 +126,7 @@ class SyncManager:
     """
     A class that knows how to synchronize emails.
     """
-    SYNC_COLLECTION = 'sync'
+    PENDING_COLLECTION = 'pending'
     UNTAGGED_COLLECTION = 'untagged'
     LAST_SYNC = 'lastsync'
 
@@ -184,7 +184,7 @@ class SyncManager:
             tagging_result = self.tag_transaction_emails(transaction_emails)
             self.save_transaction_emails(
                 tagging_result.tagged,
-                self.SYNC_COLLECTION
+                self.PENDING_COLLECTION
             )
             self.save_transaction_emails(
                 tagging_result.untagged,
@@ -339,11 +339,11 @@ class SyncManager:
 
         return concepts_set
 
-    def load_sync_transactions(self):
+    def load_pending_transactions(self):
         """
-        Load sync transactions from db and return a list.
+        Load pending transactions from db and return a list.
         """
-        records = self._db.get_records(self.SYNC_COLLECTION)
+        records = self._db.get_records(self.PENDING_COLLECTION)
         pending_transactions = []
         for record in records:
             pending_transactions.append(TaggedTransaction(**record))
@@ -364,7 +364,7 @@ class SyncManager:
                 email_id=tagged_transaction.email_id
             )
             transaction_manager.save_transaction(transaction)
-        self._db.remove_collection(self.SYNC_COLLECTION)
+        self._db.remove_collection(self.PENDING_COLLECTION)
 
     def tag_transactions(self):
         """
@@ -374,7 +374,7 @@ class SyncManager:
         tagging_result = self.tag_transaction_emails(untagged_transactions)
         self.save_transaction_emails(
             tagging_result.tagged,
-            self.SYNC_COLLECTION
+            self.PENDING_COLLECTION
         )
         self._db.remove_collection(self.UNTAGGED_COLLECTION)
         self.save_transaction_emails(

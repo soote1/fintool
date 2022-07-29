@@ -392,8 +392,8 @@ class SyncController(Action):
     def exec(self, data):
         """Run corresponding action based in provided cli args."""
 
-        if data['show']:
-            action = ShowSyncTransactions()
+        if data['pending']:
+            action = ShowPendingTransactions()
         elif data['untagged']:
             action = ShowUntaggedTransactions()
         elif data['concepts']:
@@ -435,8 +435,8 @@ class SyncTransactions(Action):
         sync_manager.sync_transactions(sync_details)
 
 
-class ShowSyncTransactions(Action):
-    """An action to show the contents of the sync db."""
+class ShowPendingTransactions(Action):
+    """An action to show the contents of the pending db."""
     def __init__(self):
         """
         Initialize instance.
@@ -445,9 +445,9 @@ class ShowSyncTransactions(Action):
         super().__init__()
 
     def exec(self, data):
-        """Load the contents of the sync db and print them in stdout."""
+        """Load the contents of the pending db and print them in stdout."""
         sync_manager = SyncManager()
-        pending_transactions = sync_manager.load_sync_transactions()
+        pending_transactions = sync_manager.load_pending_transactions()
         for t in pending_transactions:
             print(t.serialize())
 
