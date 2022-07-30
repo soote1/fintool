@@ -137,6 +137,7 @@ class TransactionManager:
         """
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         self._db = db if db else DbFactory.get_db('csv')()
+        self._transaction_email_ids = set()
 
     def calculate_collection_from_date(self, date_str):
         """
@@ -187,6 +188,14 @@ class TransactionManager:
         """
         return [Transaction(**d) for d in dicts]
 
+    def load_transaction_email_ids(self, collection):
+        """
+        Load transaction email ids into memory so that we can check for
+        existence before inserting it.
+        """
+        txs = self.create_transaction_list(self._db.get_records(collection))
+        self._transaction_email_ids.update([tx.email_id for tx in txs])
+
     def save_transaction(self, transaction):
         """Save a transaction in db.
 
@@ -196,10 +205,14 @@ class TransactionManager:
         # TODO: need to get db type from cfg
         self._logger.debug('saving transaction in db')
         collection = self.calculate_collection_from_date(transaction.date)
-        self._db.add_record(
-            record=transaction.serialize(),
-            collection=collection
-        )
+        self.load_transaction_email_ids(collection)
+        if transaction.email_id not in self._transaction_email_ids:
+            self._db.add_record(
+                record=transaction.serialize(),
+                collection=collection
+            )
+        else:
+            self._logger.debug('ignoring duplicate transaction')
 
     def filter_transactions(self, transactions, filters):
         """
