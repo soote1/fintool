@@ -37,7 +37,7 @@ class OverallSummary:
                 # I could use list comprehension but line is too long :(
                 total_per_tag_strs = []
                 for tag, total in monthly_data['total_per_tag'].items():
-                    total_per_tag_strs.append(f'{tag}:\t{total}\n')
+                    total_per_tag_strs.append(f'{tag}:\t{round(total, 2)}\n')
                 total_per_tag_str = ''.join(total_per_tag_strs)
                 overall_summary = f'{overall_summary}{total_per_tag_str}\n'
 
