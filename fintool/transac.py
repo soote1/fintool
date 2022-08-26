@@ -193,8 +193,12 @@ class TransactionManager:
         Load transaction email ids into memory so that we can check for
         existence before inserting it.
         """
-        txs = self.create_transaction_list(self._db.get_records(collection))
-        self._transaction_email_ids.update([tx.email_id for tx in txs])
+        try:
+            records = self._db.get_records(collection)
+            txs = self.create_transaction_list(records)
+            self._transaction_email_ids.update([tx.email_id for tx in txs])
+        except MissingCollectionError:
+            pass # this is OK, there are no transactions yet
 
     def save_transaction(self, transaction):
         """Save a transaction in db.

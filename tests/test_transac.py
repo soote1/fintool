@@ -11,12 +11,11 @@ class TestTransactions(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.DB_DIR = TEST_DB_PATH
-        cls.RECORDS_FILE = cls.DB_DIR.joinpath("records.csv")
         cls.FILE_DB = CsvDb(homedir=TEST_DB_PATH)
+        cls.transaction_manager = TransactionManager(db=cls.FILE_DB)
 
     def setUp(self):
         remove_dir(self.DB_DIR)
-        self.transaction_manager = TransactionManager(db=self.FILE_DB)
 
     def test_create_transaction(self):
         expected = {
