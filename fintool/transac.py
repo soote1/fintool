@@ -7,7 +7,7 @@ import uuid
 import datetime
 
 from fintool.db import MissingCollectionError, DbFactory
-from fintool.logging import LoggingHelper
+from fintool.log import LoggingHelper
 
 
 class Error(Exception):

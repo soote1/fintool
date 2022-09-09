@@ -22,7 +22,7 @@ from fintool.actions import (
     PrintTags,
     SyncController
 )
-from fintool.logging import LoggingHelper
+from fintool.log import LoggingHelper
 
 
 SUBPARSERS = 'subparsers'

@@ -5,7 +5,7 @@ create, retrieve, update and delete.
 import uuid
 
 from fintool.db import DbFactory, MissingCollectionError
-from fintool.logging import LoggingHelper
+from fintool.log import LoggingHelper
 
 
 class Error(Exception):

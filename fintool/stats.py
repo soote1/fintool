@@ -5,7 +5,7 @@ on data sets.
 import datetime
 import calendar
 
-from fintool.logging import LoggingHelper
+from fintool.log import LoggingHelper
 
 
 class OverallSummary:

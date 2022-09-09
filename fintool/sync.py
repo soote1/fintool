@@ -6,7 +6,7 @@ local db.
 import time
 
 from fintool.db import DbFactory, MissingCollectionError
-from fintool.logging import LoggingHelper
+from fintool.log import LoggingHelper
 from fintool.tagging import TagManager, NoTagsError
 from fintool.email import (
     build_client,

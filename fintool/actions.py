@@ -5,7 +5,7 @@ to create commands for cli object.
 
 
 from fintool.transac import Transaction, TransactionManager
-from fintool.logging import LoggingHelper
+from fintool.log import LoggingHelper
 from fintool.stats import StatsHelper
 from fintool.tagging import Tag, TagManager
 from fintool.sync import SyncManager, SyncDetails

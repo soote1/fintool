@@ -13,7 +13,7 @@ Supported clients:
 import csv
 import pathlib
 
-from fintool.logging import LoggingHelper
+from fintool.log import LoggingHelper
 
 
 class Error(Exception):
