@@ -9,6 +9,7 @@ from fintool.log import LoggingHelper
 from fintool.stats import StatsHelper
 from fintool.tagging import Tag, TagManager
 from fintool.sync import SyncManager, SyncDetails
+from fintool.charts import ChartFactory
 
 
 class Error(Exception):
@@ -76,7 +77,7 @@ class CreateFilters(Action):
     """Convert cli options into filters dictionary.
     """
     def __init__(self):
-        self.TYPE = 'type'
+        self.TYPE = 'txtype'
         self.DATE = 'date'
         self.AMOUNT = 'amount'
         self.TAGS = 'tags'
@@ -219,10 +220,19 @@ class ShowStats(Action):
         """Show a set of stats in in stdout.
         """
         self._logger.debug('running action with %s', data)
-        if data[self.DRAW]:
-            pass
+        chart_type = data[self.DRAW]
+        stats = data[self.STATS]
+        if chart_type:
+            chart_data = stats.get_chart_data()
+            chart = ChartFactory.build_chart(chart_type)
+            chart.draw(
+                chart_data['title'],
+                chart_data['ylabel'],
+                chart_data['labels'],
+                chart_data['y_values']
+            )
         else:
-            print(data[self.STATS])
+            print(stats)
 
 
 class CreateTag(Action):

@@ -57,6 +57,14 @@ class OverallSummary:
     def extract_year(self):
         return list(self.__data.keys())[0]
 
+    def get_chart_data(self):
+        return {
+            'title': f'Overall Summary',
+            'ylabel': '$',
+            'labels': self.months,
+            'y_values': self.amounts_per_tag
+        }
+
     def __str__(self):
         """Create a human readable representation of the
         data encapsulated by the class.

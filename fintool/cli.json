@@ -73,7 +73,7 @@
                 "help": "List transactions",
                 "args": [
                   {
-                    "id": "--type",
+                    "id": "--txtype",
                     "kwargs": {
                       "help": "Transaction type to filter transactions"
                     }
@@ -111,23 +111,23 @@
                 "help": "show different types of stats about transactions",
                 "args": [
                   {
-                    "id": "--statstype",
+                    "id": "--sttype",
                     "kwargs": {
-                      "help": "Indicate what type of summary should be displayed",
+                      "help": "Indicate what type of stats should be displayed",
                       "default": "overall_summary",
-                      "choices": [
-                        "overall_summary"
-                      ]
+                      "choices": ["overall_summary"]
                     }
                   },
                   {
                     "id": "--draw",
                     "kwargs": {
-                      "help": "Show the stats in a chart"
+                      "help": "Show the stats in a given chart type",
+                      "default": "",
+                      "choices": ["multiline", "bar"]
                     }
                   },
                   {
-                    "id": "--type",
+                    "id": "--txtype",
                     "kwargs": {
                       "help": "Transaction type to filter transactions"
                     }
