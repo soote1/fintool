@@ -355,7 +355,7 @@ class SyncManager:
         committing transactions.
         """
         transaction_manager = TransactionManager()
-        for tagged_transaction in self.load_sync_transactions():
+        for tagged_transaction in self.load_pending_transactions():
             transaction = Transaction(
                 type='outcome',
                 tags=tagged_transaction.tags,
