@@ -77,7 +77,7 @@ class CreateFilters(Action):
     """Convert cli options into filters dictionary.
     """
     def __init__(self):
-        self.TYPE = 'txtype'
+        self.TYPE = 'type'
         self.DATE = 'date'
         self.AMOUNT = 'amount'
         self.TAGS = 'tags'
@@ -90,8 +90,8 @@ class CreateFilters(Action):
         """
         self._logger.debug('running action with: %s', data)
         filters = {}
-        if data[self.TYPE]:
-            filters[self.TYPE] = data[self.TYPE]
+        if data['txtype']:
+            filters[self.TYPE] = data['txtype']
 
         if data[self.AMOUNT]:
             filters[self.AMOUNT] = data[self.AMOUNT]
@@ -190,7 +190,7 @@ class CreateStats(Action):
     """Process a set of transactions to generate statistics.
     """
     STATS = 'stats'
-    STATS_TYPE = 'statstype'
+    STATS_TYPE = 'sttype'
     TRANSACTIONS = 'transactions'
 
     def __init__(self):
