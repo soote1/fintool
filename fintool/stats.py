@@ -12,18 +12,57 @@ class OverallSummary:
     """A class to store and serialize a data set representing
     an overall summary.
     """
-    def __init__(self, data):
-        self._data = data
+    def __init__(self, data, tags):
+        self.__tags = tags
+        self.__data = data
+        self.__year = self.extract_year()
+        self.__months = self.extract_months()
+        self.__amounts_per_tag = self.extract_amount_per_tag()
+
+    @property
+    def year(self):
+        return self.__year
+
+    @property
+    def months(self):
+        return self.__months
+
+    @property
+    def amounts_per_tag(self):
+        return self.__amounts_per_tag
 
     def get_data(self):
-        return self._data
+        return self.__data
+
+    def extract_months(self):
+        response = []
+        for _, months in self.__data.items():
+            for month, _ in months.items():
+                response.append(calendar.month_name[month])
+        return response
+
+    def extract_amount_per_tag(self):
+        amounts_per_tag = {}
+
+        for _, months in self.__data.items():
+            for _, monthly_data in months.items():
+                for tag in self.__tags:
+                    total = monthly_data['total_per_tag'].get(tag, 0)
+                    try:
+                        amounts_per_tag[tag].append(round(total, 2))
+                    except:
+                        amounts_per_tag[tag] = [round(total, 2)]
+        return amounts_per_tag
+
+    def extract_year(self):
+        return list(self.__data.keys())[0]
 
     def __str__(self):
         """Create a human readable representation of the
         data encapsulated by the class.
         """
         overall_summary = ''
-        for year, months in self._data.items():
+        for year, months in self.__data.items():
             overall_summary = f'{overall_summary}Year: {year}\n'
             for month, monthly_data in months.items():
                 month_name = f'Month: {calendar.month_name[month]}\n'
@@ -86,6 +125,7 @@ class StatsHelper:
         """
         self._logger.debug('creating overall summary')
         result = {}
+        tags = set()
         for data in self._dataset:
             year = datetime.datetime.strptime(data.date, '%Y-%m-%d').year
             month = datetime.datetime.strptime(data.date, '%Y-%m-%d').month
@@ -110,5 +150,5 @@ class StatsHelper:
                     result[year][month][self.TOTAL_PER_TAG][tag] += data.amount
                 else:
                     result[year][month][self.TOTAL_PER_TAG][tag] = data.amount
-
-        return OverallSummary(result)
+                tags.add(tag)
+        return OverallSummary(result, tags)
