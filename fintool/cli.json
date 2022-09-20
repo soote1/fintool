@@ -115,7 +115,9 @@
                     "kwargs": {
                       "help": "Indicate what type of stats should be displayed",
                       "default": "overall_summary",
-                      "choices": ["overall_summary"]
+                      "choices": [
+                        "overall_summary"
+                      ]
                     }
                   },
                   {
@@ -123,7 +125,10 @@
                     "kwargs": {
                       "help": "Show the stats in a given chart type",
                       "default": "",
-                      "choices": ["multiline", "bar"]
+                      "choices": [
+                        "multiline",
+                        "bar"
+                      ]
                     }
                   },
                   {
@@ -156,6 +161,12 @@
                     "id": "--amount",
                     "kwargs": {
                       "help": "Amount range to filter transactions"
+                    }
+                  },
+                  {
+                    "id": "--draw-only",
+                    "kwargs": {
+                      "help": "A | separated list of tags to be drawn in chart"
                     }
                   }
                 ]

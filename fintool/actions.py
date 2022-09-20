@@ -211,6 +211,7 @@ class ShowStats(Action):
     """
     DRAW = 'draw'
     STATS = 'stats'
+    DRAW_ONLY = 'draw_only'
 
     def __init__(self):
         self._logger = LoggingHelper.get_logger(self.__class__.__name__)
@@ -222,9 +223,17 @@ class ShowStats(Action):
         self._logger.debug('running action with %s', data)
         chart_type = data[self.DRAW]
         stats = data[self.STATS]
+        draw_only = data[self.DRAW_ONLY].split('|')
         if chart_type:
             chart_data = stats.get_chart_data()
             chart = ChartFactory.build_chart(chart_type)
+
+            # filter target tags
+            tags_to_draw = {}
+            for tag in draw_only:
+                tags_to_draw[tag] = chart_data['y_values'][tag]
+            chart_data['y_values'] = tags_to_draw
+
             chart.draw(
                 chart_data['title'],
                 chart_data['ylabel'],
