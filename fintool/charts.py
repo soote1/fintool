@@ -37,6 +37,12 @@ class MultiLineChart(BaseChart):
         """
         x_values = numpy.arange(len(labels))
 
+        # set color map to avoid repetition
+        colormap = matplotlib.pyplot.cm.nipy_spectral
+        self.axes.set_prop_cycle(color=[
+            colormap(i) for i in numpy.linspace(0, 1, len(line_values.keys()))
+        ])
+
         # Build lines
         for label, y_values in line_values.items():
             self.axes.plot(x_values, y_values, label=label)
