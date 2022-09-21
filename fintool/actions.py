@@ -223,16 +223,21 @@ class ShowStats(Action):
         self._logger.debug('running action with %s', data)
         chart_type = data[self.DRAW]
         stats = data[self.STATS]
-        draw_only = data[self.DRAW_ONLY].split('|')
+
+        draw_only = data.get(self.DRAW_ONLY, [])
+        if draw_only:
+            draw_only = draw_only.split('|')
+
         if chart_type:
             chart_data = stats.get_chart_data()
             chart = ChartFactory.build_chart(chart_type)
 
             # filter target tags
-            tags_to_draw = {}
-            for tag in draw_only:
-                tags_to_draw[tag] = chart_data['y_values'][tag]
-            chart_data['y_values'] = tags_to_draw
+            if draw_only:
+                tags_to_draw = {}
+                for tag in draw_only:
+                    tags_to_draw[tag] = chart_data['y_values'][tag]
+                chart_data['y_values'] = tags_to_draw
 
             chart.draw(
                 chart_data['title'],
