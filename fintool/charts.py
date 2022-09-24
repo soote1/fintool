@@ -73,7 +73,28 @@ class BarChart(BaseChart):
         self.show(y_label, title, x_values, labels)
 
 
-SUPPORTED_CHARTS = {'bar': BarChart, 'multiline': MultiLineChart}
+class PieChart(BaseChart):
+    def draw(self, title, y_label, labels, section_values):
+        """
+        Draw a pie chart in the screen.
+        """
+        # Pie chart, where the slices will be ordered and plotted counter-clockwise:
+        # explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+        self.axes.pie(
+            section_values,
+            #explode=explode,
+            labels=labels,
+            autopct='%1.1f%%',
+            shadow=True,
+            startangle=90
+        )
+        self.axes.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+        matplotlib.pyplot.show()
+
+
+SUPPORTED_CHARTS = {'bar': BarChart, 'multiline': MultiLineChart, 'pie': PieChart}
 
 
 class UnsupportedChartTypeError(Exception):

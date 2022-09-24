@@ -115,9 +115,7 @@
                     "kwargs": {
                       "help": "Indicate what type of stats should be displayed",
                       "default": "overall_summary",
-                      "choices": [
-                        "overall_summary"
-                      ]
+                      "choices": ["overall_summary"]
                     }
                   },
                   {
@@ -125,10 +123,7 @@
                     "kwargs": {
                       "help": "Show the stats in a given chart type",
                       "default": "",
-                      "choices": [
-                        "multiline",
-                        "bar"
-                      ]
+                      "choices": ["multiline", "bar", "pie"]
                     }
                   },
                   {

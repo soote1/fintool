@@ -232,12 +232,23 @@ class ShowStats(Action):
             chart_data = stats.get_chart_data()
             chart = ChartFactory.build_chart(chart_type)
 
+            # TODO: refactor this block so it is in a different place
             # filter target tags
             if draw_only:
                 tags_to_draw = {}
                 for tag in draw_only:
                     tags_to_draw[tag] = chart_data['y_values'][tag]
                 chart_data['y_values'] = tags_to_draw
+
+            # TODO: refactor this block so it is in a different place
+            if chart_type == 'pie':
+                labels = []
+                section_values = []
+                for label, values in chart_data['y_values'].items():
+                    labels.append(label)
+                    section_values.append(values[0])
+                chart_data['labels'] = labels
+                chart_data['y_values'] = section_values
 
             chart.draw(
                 chart_data['title'],
