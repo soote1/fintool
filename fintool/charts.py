@@ -18,6 +18,13 @@ class BaseChart(abc.ABC):
         """
         pass
 
+    def set_unique_colormap(self, item_count):
+        # set color map to avoid repetition
+        colormap = matplotlib.pyplot.cm.nipy_spectral
+        self.axes.set_prop_cycle(color=[
+            colormap(i) for i in numpy.linspace(0, 1, item_count)
+        ])
+
     def show(self, y_label, title, x_values, x_labels):
         """
         Show the chart on the screen.
@@ -37,11 +44,7 @@ class MultiLineChart(BaseChart):
         """
         x_values = numpy.arange(len(labels))
 
-        # set color map to avoid repetition
-        colormap = matplotlib.pyplot.cm.nipy_spectral
-        self.axes.set_prop_cycle(color=[
-            colormap(i) for i in numpy.linspace(0, 1, len(line_values.keys()))
-        ])
+        self.set_unique_colormap(len(line_values.keys()))
 
         # Build lines
         for label, y_values in line_values.items():
@@ -56,6 +59,8 @@ class BarChart(BaseChart):
         Draw a bar chart in the screen.
         """
         x_values = numpy.arange(len(labels))
+
+        self.set_unique_colormap(len(bar_values.keys()))
 
         # Build bars
         bars_count = len(bar_values.keys())
@@ -78,8 +83,11 @@ class PieChart(BaseChart):
         """
         Draw a pie chart in the screen.
         """
+        # TODO: explode section with highest value
         # Pie chart, where the slices will be ordered and plotted counter-clockwise:
         # explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+        self.set_unique_colormap(len(section_values))
 
         self.axes.pie(
             section_values,
