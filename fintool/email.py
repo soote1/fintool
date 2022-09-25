@@ -184,14 +184,12 @@ class GmailClient:
         """
         messages_html = []
         messages = self.list_messages(labels, after=from_date)
-
+        print(f'found {len(messages)} new messages since {from_date}')
         if not messages:
-            print('No messages found.')
             return messages_html
-
-        for msg in messages:
+        for i, msg in enumerate(messages):
+            print(f'fetching message #{i}', end='\r')
             content = self.get_message(msg['id'])
-
             if content['payload']['mimeType'] == 'multipart/related':
                 for part in content['payload']['parts']:
                     if part['mimeType'] == 'text/html':
@@ -208,7 +206,7 @@ class GmailClient:
                 messages_html.append({'uid': msg['id'], 'content': data})
 
             time.sleep(0.02)  # limit to 50 req/s to avoid rate limit TODO: load from config
-
+        print(f'all messages were downloaded successfully')
         return messages_html
 
     def fetch_emails(self, mail_boxes, from_date):

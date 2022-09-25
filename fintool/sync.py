@@ -177,7 +177,7 @@ class SyncManager:
             sync_details.provider,
             sync_details.email_type,
             sync_details.mail_boxes,
-            last_sync
+            last_sync.last_sync if last_sync else last_sync
         )
         last_sync = int(time.time())  # calculate timestamp for next sync
         try:
