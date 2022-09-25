@@ -83,21 +83,31 @@ class PieChart(BaseChart):
         """
         Draw a pie chart in the screen.
         """
-        # TODO: explode section with highest value
-        # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-        # explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+        # explode section with highest value
+        max_val = 0
+        max_pos = -1
+        for i in range(len(section_values)):
+            if section_values[i] > max_val:
+                max_val = section_values[i]
+                max_pos = i
+        explode = [0.0 for _ in range(len(section_values))]
+        explode[max_pos] = 0.1
 
         self.set_unique_colormap(len(section_values))
 
-        self.axes.pie(
+        wedges, _, _ = self.axes.pie(
             section_values,
-            #explode=explode,
-            labels=labels,
+            explode=explode,
             autopct='%1.1f%%',
-            shadow=True,
-            startangle=90
+            textprops=dict(color='w')
         )
         self.axes.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+        self.axes.legend(
+            wedges,
+            labels,
+            bbox_to_anchor=(0.9, 1)
+        )
 
         matplotlib.pyplot.show()
 
