@@ -281,6 +281,7 @@ class BaseHtmlEmailParser(html.parser.HTMLParser):
         """
         Just call super's init method.
         """
+        self._data_strs = []
         super().__init__()
 
     def get_data(self):
@@ -293,6 +294,7 @@ class BaseHtmlEmailParser(html.parser.HTMLParser):
         """
         Convert an email into a transaction object.
         """
+        self._data_strs = []
         self.feed(html_email.content)
         parsed_data = self.get_data()
         parsed_data[TransactionEmail.EMAIL_ID] = html_email.uid
@@ -304,10 +306,6 @@ class BanamexEmailParser(BaseHtmlEmailParser):
     AMOUNT_STR = '$'
     DATE_STR = 'Fecha y hora'
     TRANSACTION_TYPE = 'Retiro/Compra'
-
-    def __init__(self):
-        self._data_strs = []
-        super().__init__()
 
     def handle_data(self, data):
         self._data_strs.append(data)
@@ -368,7 +366,6 @@ class HeyBancoEmailParser(BaseHtmlEmailParser):
     DATE_STR = 'Fecha y hora de la transacción'
 
     def __init__(self):
-        self._data_strs = []
         self._start_tag = None
         super().__init__()
 
