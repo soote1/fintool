@@ -96,30 +96,23 @@ class LastSync:
     A class to represent the last sync date.
     """
     LAST_SYNC = 'last_sync'
+    TARGET = 'target'
 
-    def __init__(self, last_sync):
+    def __init__(self, last_sync=None, target=None):
         """
         Initialize instance.
         """
-        self.last_sync = last_sync
+        self.last_sync = int(last_sync)
+        self.target = target
 
     def serialize(self):
         """
         Convert instance into a dictionary.
         """
-        return {self.LAST_SYNC: self.last_sync}
-
-    @staticmethod
-    def from_dict(d):
-        """
-        Create a LastSync instance from a given dictionary.
-        """
-        try:
-            return LastSync(int(d[LastSync.LAST_SYNC]))
-        except KeyError as e:
-            raise MissingRequiredFieldError(
-                f"Missing {e} key"
-            )
+        return {
+            self.LAST_SYNC: self.last_sync,
+            self.TARGET: self.target
+        }
 
 
 class SyncManager:
@@ -169,7 +162,12 @@ class SyncManager:
         transactions and store them in the corresponding collection.
         """
         try:
-            last_sync = self.get_last_sync(self.LAST_SYNC)
+            last_sync = self.get_last_sync(
+                sync_details.provider,
+                sync_details.email_type,
+                sync_details.mail_boxes,
+                self.LAST_SYNC
+            )
         except MissingCollectionError:
             last_sync = None  # the collection doesn't exists in first run
 
@@ -198,7 +196,12 @@ class SyncManager:
                 self.UNTAGGED_COLLECTION
             )
 
-        self.update_last_sync(last_sync, self.LAST_SYNC)
+        self.update_last_sync(
+            sync_details.provider,
+            sync_details.email_type,
+            sync_details.mail_boxes,
+            last_sync, self.LAST_SYNC
+        )
 
     def tag_transaction_emails(self, transaction_emails):
         """
@@ -234,7 +237,8 @@ class SyncManager:
         emails = email_client.fetch_emails(mail_boxes, from_date)
         for email in emails:
             try:
-                transaction_emails.append(email_parser.parse_email(email))
+                transaction_email = email_parser.parse_email(email)
+                transaction_emails.append(transaction_email)
             except MissingFieldError:
                 continue  # TODO: think if we should do something with error
         return transaction_emails
@@ -266,15 +270,18 @@ class SyncManager:
         """
         self._db.add_record(transaction_email.serialize(), collection)
 
-    def get_last_sync(self, collection):
+    def get_last_sync(self, provider, email_type, mail_boxes, collection):
         """
         Get last sync from db.
         """
         self._logger.debug('Reading last sync from db')
-        result = self._db.get_records(collection)
-        if result:
+        target = f'{provider},{email_type},{mail_boxes}'
+        records = self._db.get_records(collection)
+        for record in records:
             try:
-                return LastSync.from_dict(result[0])
+                last_sync = LastSync(**record)
+                if last_sync.target == target:
+                    return last_sync
             except MissingFieldError as e:
                 raise InvalidInputObject(
                     f"Can't create Lastsync instance: {e}"
@@ -282,12 +289,12 @@ class SyncManager:
 
         return None
 
-    def remove_last_sync(self, collection):
+    def remove_last_sync(self, provider, email_type, mail_boxes, collection):
         """
         Remove last sync from db.
         """
         self._logger.debug("Removing last sync from db")
-        last_sync = self.get_last_sync(collection)
+        last_sync = self.get_last_sync(provider, email_type, mail_boxes, collection)
         if last_sync:
             self._db.remove_record(
                 LastSync.LAST_SYNC,
@@ -295,24 +302,28 @@ class SyncManager:
                 collection
             )
 
-    def save_last_sync(self, last_sync, collection):
+    def save_last_sync(self, provider, email_type, mail_boxes, last_sync_timestamp, collection):
         """
         Save last sync in db.
         """
         self._logger.debug("Saving last sync in db")
-        self._db.add_record(LastSync(last_sync).serialize(), collection)
+        last_sync = LastSync(
+            last_sync=last_sync_timestamp,
+            target=f'{provider},{email_type},{mail_boxes}'
+        )
+        self._db.add_record(last_sync.serialize(), collection)
 
-    def update_last_sync(self, last_sync, collection):
+    def update_last_sync(self, provider, email_type, mail_boxes, last_sync_timestamp, collection):
         """
         Update the value of last sync in the db.
         """
         self._logger.debug("Updating last sync in db")
         try:
-            self.remove_last_sync(collection)
+            self.remove_last_sync(provider, email_type, mail_boxes, collection)
         except MissingCollectionError:
             pass  # the collection doesn't exists the first time
 
-        self.save_last_sync(last_sync, collection)
+        self.save_last_sync(provider, email_type, mail_boxes, last_sync_timestamp, collection)
 
     def load_untagged_transactions(self):
         """
