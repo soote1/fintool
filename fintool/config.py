@@ -8,9 +8,18 @@ class ConfigManager:
     """
     A helper class to keep the config in memory.
     """
+    __cfg = dict()
+
     @classmethod
     def init(cls, cfg=None):
         cls.__cfg = cfg if cfg else cls.load_cfg()
+
+    @classmethod
+    def get_cfg(cls):
+        """
+        Return the cfg object.
+        """
+        return cls.__cfg
 
     @classmethod
     def get(cls, key):
