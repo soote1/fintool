@@ -28,6 +28,9 @@ class ConfigManager:
         then go into the cfg object and return the value corresponding to the
         last part.
         """
+        if not cls.__cfg:
+            cls.__cfg = cls.load_cfg()
+
         keys = key.split('.')
         value = cls.__cfg
         for k in keys:
@@ -40,6 +43,9 @@ class ConfigManager:
         Set a value for the given key. If the inner keys doesn't exist, then
         create the corresponding objects.
         """
+        if not cls.__cfg:
+            cls.__cfg = cls.load_cfg()
+
         keys = key.split('.')
         node = cls.__cfg
         for k in keys[:-1]:
