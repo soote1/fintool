@@ -52,8 +52,8 @@ class TestCLI(unittest.TestCase):
         expected = {
             'cmd': 'txs',
             'action': 'list',
-            'type': 'income',
-            'tags': 'a,b,c',
+            'txtype': 'income',
+            'tags': 'a|b|c',
             'amount': '12-32',
             'from': '2020-01-01',
             'to': '2020-02-01'
@@ -62,7 +62,7 @@ class TestCLI(unittest.TestCase):
         cmd = [
             "txs",
             "list",
-            "--type",
+            "--txtype",
             "income",
             "--from",
             "2020-01-01",
@@ -71,7 +71,7 @@ class TestCLI(unittest.TestCase):
             "--amount",
             "12-32",
             "--tags",
-            "a,b,c"
+            "a|b|c"
         ]
 
         cli = fintool.cli.CLI()
@@ -83,23 +83,24 @@ class TestCLI(unittest.TestCase):
         expected = {
             'cmd': 'txs',
             'action': 'stats',
-            'statstype': 'overall_summary',
+            'sttype': 'overall_summary',
             'draw': 'pie',
-            'type': 'income',
+            'txtype': 'income',
             'from': '2020-01-01',
             'to': '2020-02-01',
-            'tags': 'a,b,c',
-            'amount': '12-32'
+            'tags': 'a|b|c',
+            'amount': '12-32',
+            'draw_only': 'something'
         }
 
         cmd = [
             "txs",
             "stats",
-            "--statstype",
+            "--sttype",
             "overall_summary",
             "--draw",
             "pie",
-            "--type",
+            "--txtype",
             "income",
             "--from",
             "2020-01-01",
@@ -108,7 +109,9 @@ class TestCLI(unittest.TestCase):
             "--amount",
             "12-32",
             "--tags",
-            "a,b,c"
+            "a|b|c",
+            "--draw-only",
+            "something"
         ]
 
         cli = fintool.cli.CLI()
