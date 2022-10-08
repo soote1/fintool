@@ -65,4 +65,4 @@ class ConfigManager:
         Write the config object into a file.
         """
         with open(path, 'w') as f:
-            f.write(cls.__cfg)
+            f.write(json.dumps(cls.__cfg))
