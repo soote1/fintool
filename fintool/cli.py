@@ -20,9 +20,12 @@ from fintool.actions import (
     EditTag,
     RemoveTag,
     PrintTags,
-    SyncController
+    SyncController,
+    ShowSetting,
+    SetSetting
 )
 from fintool.log import LoggingHelper
+from fintool.config import ConfigManager
 
 
 SUBPARSERS = 'subparsers'
@@ -48,6 +51,8 @@ ADD_TAG_CMD = 'tags.add'
 EDIT_TAG_CMD = 'tags.edit'
 REMOVE_TAG_CMD = 'tags.remove'
 LIST_TAGS_CMD = 'tags.list'
+SET_SETTING_CMD = 'config.set'
+GET_SETTING_CMD = 'config.get'
 
 
 class ArgsParser:
@@ -140,7 +145,9 @@ SUPPORTED_CMDS = {
     ADD_TAG_CMD: [CreateTag, AddTag],
     EDIT_TAG_CMD: [CreateTag, EditTag],
     REMOVE_TAG_CMD: [RemoveTag],
-    LIST_TAGS_CMD: [GetTags, PrintTags]
+    LIST_TAGS_CMD: [GetTags, PrintTags],
+    SET_SETTING_CMD: [SetSetting],
+    GET_SETTING_CMD: [ShowSetting]
 }
 
 
@@ -166,6 +173,7 @@ class CLI:
 
         self.args_parser = ArgsParser(self._cli_cfg[ARGS_PARSER_CFG])
         self.cmd_processor = CommandProcessor()
+        ConfigManager.init()
 
     def parse_args(self, args):
         """

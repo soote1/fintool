@@ -10,6 +10,7 @@ from fintool.stats import StatsHelper
 from fintool.tagging import Tag, TagManager
 from fintool.sync import SyncManager, SyncDetails
 from fintool.charts import ChartFactory
+from fintool.config import ConfigManager
 
 
 class Error(Exception):
@@ -544,8 +545,56 @@ class TagTransactions(Action):
     """
     def __init__(self):
         """Initialize instance."""
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
 
     def exec(self, data):
         """Use the sync manager to tag transactions from untagged db."""
         sync_manager = SyncManager()
         sync_manager.tag_transactions()
+
+
+class ShowSetting(Action):
+    """
+    An action to print the value of a setting in the stdout.
+    """
+    def __init__(self):
+        """Initialize instance."""
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Get the corresponding value for the given setting and print it in
+        stdout.
+        """
+        setting = data['setting']
+        value = ConfigManager.get(setting)
+        print(value)
+
+
+class SetSetting(Action):
+    """
+    An action to create/update a setting.
+    """
+    def __init__(self):
+        """Initialize instance."""
+        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
+        super().__init__()
+
+    def exec(self, data):
+        """
+        Use the config manager to update an existing setting or create it. If
+        the --append option was passed, then add the new value to the existing
+        one instead of replacing it.
+        """
+        key = data['setting']
+        value = data['value']
+        append = data['append']
+
+        if append:
+            ConfigManager.append(key, value)
+        else:
+            ConfigManager.set(key, value)
+
+        ConfigManager.dump_config()

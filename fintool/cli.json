@@ -115,7 +115,9 @@
                     "kwargs": {
                       "help": "Indicate what type of stats should be displayed",
                       "default": "overall_summary",
-                      "choices": ["overall_summary"]
+                      "choices": [
+                        "overall_summary"
+                      ]
                     }
                   },
                   {
@@ -123,7 +125,11 @@
                     "kwargs": {
                       "help": "Show the stats in a given chart type",
                       "default": "",
-                      "choices": ["multiline", "bar", "pie"]
+                      "choices": [
+                        "multiline",
+                        "bar",
+                        "pie"
+                      ]
                     }
                   },
                   {
@@ -350,6 +356,54 @@
                 "name": "list",
                 "help": "List all tags in db",
                 "args": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "config",
+          "help": "Manage configuration settings.",
+          "args": [],
+          "subparsers": {
+            "id": "action",
+            "required": true,
+            "subparsers_cfgs": [
+              {
+                "name": "set",
+                "help": "Create/Update a setting.",
+                "args": [
+                  {
+                    "id": "--append",
+                    "kwargs": {
+                      "help": "Try to append value instead of replacing existing one.",
+                      "action": "store_true"
+                    }
+                  },
+                  {
+                    "id": "setting",
+                    "kwargs": {
+                      "help": "The setting to be created/updated. The path must be separated by dots."
+                    }
+                  },
+                  {
+                    "id": "value",
+                    "kwargs": {
+                      "help": "The value that should be set or appended."
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "get",
+                "help": "Show the value of a given setting.",
+                "args": [
+                  {
+                    "id": "setting",
+                    "kwargs": {
+                      "help": "The setting to be created/updated. The path must be separated by dots."
+                    }
+                  }
+                ]
               }
             ]
           }
