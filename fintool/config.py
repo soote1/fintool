@@ -1,7 +1,12 @@
 import json
+import pathlib
 
 
 DEFAULT_PATH = '~/.fintool/config.json'
+
+
+class MissingCfgFileError(Exception):
+    """Raised when the cfg file doesn't exists."""
 
 
 class ConfigManager:
@@ -83,13 +88,16 @@ class ConfigManager:
         Load a json config file from the given path. If no path provided, then
         load the config from the default home dir location.
         """
-        with open(path, 'r') as f:
-            return json.loads(f.read())
+        try:
+            with pathlib.Path(path).expanduser().open('r') as f:
+                return json.loads(f.read())
+        except FileNotFoundError:
+            cls.dump_config()
 
     @classmethod
     def dump_config(cls, path=DEFAULT_PATH):
         """
         Write the config object into a file.
         """
-        with open(path, 'w') as f:
+        with pathlib.Path(path).expanduser().open('w+') as f:
             f.write(json.dumps(cls.__cfg))
