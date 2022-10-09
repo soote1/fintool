@@ -32,3 +32,17 @@ class TestConfig(unittest.TestCase):
         actual = ConfigManager.get_cfg()
 
         self.assertEqual(actual, expected)
+
+    def test_append_value(self):
+        """
+        Make sure that the config manager appends the value in the
+        corresponding key and in the expected level of the parent object.
+        """
+        expected = {'a': 1, 'b': 2, 'c': {'d': {'e': [2, 3]}}}
+        initial_cfg = {'a': 1, 'b': 2, 'c': {'d': {'e': [2]}}}
+
+        ConfigManager.init(initial_cfg)
+        ConfigManager.append('c.d.e', 3)
+        actual = ConfigManager.get_cfg()
+
+        self.assertEqual(actual, expected)

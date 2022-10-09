@@ -38,6 +38,24 @@ class ConfigManager:
         return value
 
     @classmethod
+    def traverse_path(cls, path, create_inner=False):
+        """
+        Traverse the cfg object by following the given path. If create_inner is
+        True, then create missing nodes. Return the last node in the path.
+        """
+        current_node = cls.__cfg
+        for k in path:
+            try:
+                current_node = current_node[k]
+            except KeyError as e:
+                if create_inner:
+                    current_node[k] = {}
+                    current_node = current_node[k]
+                else:
+                    raise e
+        return current_node
+
+    @classmethod
     def set(cls, key, val):
         """
         Set a value for the given key. If the inner keys doesn't exist, then
@@ -47,14 +65,17 @@ class ConfigManager:
             cls.__cfg = cls.load_cfg()
 
         keys = key.split('.')
-        node = cls.__cfg
-        for k in keys[:-1]:
-            try:
-                node = node[k]
-            except KeyError:
-                node[k] = {}
-                node = node[k]
+        node = cls.traverse_path(keys[:-1], create_inner=True)
         node[keys[-1]] = val
+
+    @classmethod
+    def append(cls, key, val):
+        """
+        Append the value to given key.
+        """
+        keys = key.split('.')
+        node = cls.traverse_path(keys[:-1], create_inner=True)
+        node[keys[-1]].append(val)
 
     @classmethod
     def load_cfg(cls, path=DEFAULT_PATH):
