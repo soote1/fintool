@@ -9,6 +9,10 @@ class MissingCfgFileError(Exception):
     """Raised when the cfg file doesn't exists."""
 
 
+class InvalidOperationError(Exception):
+    """Raised when the setting doesn't support append operation."""
+
+
 class ConfigManager:
     """
     A helper class to keep the config in memory.
@@ -80,7 +84,10 @@ class ConfigManager:
         """
         keys = key.split('.')
         node = cls.traverse_path(keys[:-1], create_inner=True)
-        node[keys[-1]].append(val)
+        try:
+            node[keys[-1]].append(val)
+        except AttributeError:
+            raise InvalidOperationError(f'append not supported for {key}')
 
     @classmethod
     def load_cfg(cls, path=DEFAULT_PATH):
