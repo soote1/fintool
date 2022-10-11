@@ -6,28 +6,29 @@ import uuid
 
 from fintool.db import DbFactory, MissingCollectionError
 from fintool.log import LoggingHelper
+from fintool.errors import Error
 
 
-class Error(Exception):
-    """
-    Base class for all errors in this module.
-    """
+class DbError(Error):
+    """Type to identify errors related to this module."""
+    def __init__(self, msg):
+        super().__init__(f'Db error: {msg}')
 
 
-class MissingTagArgumentError(Error):
+class MissingTagArgumentError(DbError):
     """
     Raised when trying to create a Tag instance and some required argument is
     missing.
     """
 
 
-class InvalidTagObject(Error):
+class InvalidTagObject(DbError):
     """
     Raised when passing a non Tag instance to the transcation manager.
     """
 
 
-class NoTagsError(Error):
+class NoTagsError(DbError):
     """
     Raised when there are no tags available.
     """

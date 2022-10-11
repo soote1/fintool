@@ -2,8 +2,6 @@
 This module provides action classes that can be put into a sequence
 to create commands for cli object.
 """
-
-
 from fintool.transac import Transaction, TransactionManager
 from fintool.log import LoggingHelper
 from fintool.stats import StatsHelper
@@ -11,14 +9,13 @@ from fintool.tagging import Tag, TagManager
 from fintool.sync import SyncManager, SyncDetails
 from fintool.charts import ChartFactory
 from fintool.config import ConfigManager
-
-
-class Error(Exception):
-    pass
+from fintool.errors import Error
 
 
 class ActionError(Error):
-    pass
+    """Type to identify errors from this module"""
+    def __init__(self, msg):
+        super().__init__(f'Action error: {msg}')
 
 
 class Action:

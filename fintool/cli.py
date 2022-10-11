@@ -26,6 +26,17 @@ from fintool.actions import (
 )
 from fintool.log import LoggingHelper
 from fintool.config import ConfigManager
+from fintool.errors import Error
+
+
+class CliError(Error):
+    """Type to identify errors from this module."""
+    def __init__(self, msg):
+        super().__init__(f'Cli error: {msg}')
+
+
+class UnsupportedCmdError(CliError):
+    """Raised when the given command is not supported."""
 
 
 SUBPARSERS = 'subparsers'
@@ -151,10 +162,6 @@ SUPPORTED_CMDS = {
 }
 
 
-class UnsupportedCmdError(Exception):
-    pass
-
-
 class CLI:
 
     def __init__(self):
@@ -216,10 +223,10 @@ class CLI:
             parsed_args = self.parse_args(args)
             cmd = self.create_cmd(parsed_args)
             self.cmd_processor.process(cmd)
-        except Exception as exception:
+        except Error as error:
             self._logger.error(
-                'an error ocurred while running command: %s',
-                exception
+                'An error was found while running the given command: %s',
+                error
             )
 
             sys.exit(1)

@@ -15,21 +15,22 @@ from fintool.email import (
     TransactionEmail
 )
 from fintool.transac import Transaction, TransactionManager
+from fintool.errors import Error
 
 
-class Error(Exception):
-    """
-    Base class for errors in this module.
-    """
+class SyncError(Error):
+    """Type to identify errors related to this module."""
+    def __init__(self, msg):
+        super().__init__(f'Sync error: {msg}')
 
 
-class MissingRequiredFieldError(Error):
+class MissingRequiredFieldError(SyncError):
     """
     Raised when some data object is missing a required field.
     """
 
 
-class InvalidInputObject(Error):
+class InvalidInputObject(SyncError):
     """
     Raised when the input object for some process has invalid structure.
     """

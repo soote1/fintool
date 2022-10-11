@@ -17,34 +17,35 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 from fintool.log import LoggingHelper
+from fintool.errors import Error
 
 
-class Error(Exception):
-    """
-    Base class for errors in this module.
-    """
+class EmailError(Error):
+    """Type to identify errors related to this module."""
+    def __init__(self, msg):
+        super().__init__(f'Email error: {msg}')
 
 
-class UnsupportedEmailProviderError(Error):
+class UnsupportedEmailProviderError(EmailError):
     """
     Raised when the user requested a client for an unsupported email provider.
     """
 
 
-class UnsupportedEmailType(Error):
+class UnsupportedEmailType(EmailError):
     """
     Raised when the client requested a parser for an unsupported email type.
     """
 
 
-class MissingFieldError(Error):
+class MissingFieldError(EmailError):
     """
     Raised when the input object to create a type instance is missing a
     required field.
     """
 
 
-class InvalidDateStringError(Error):
+class InvalidDateStringError(EmailError):
     """
     Raised when the user provides a date string with invalid format.
     """

@@ -1,6 +1,22 @@
 import abc
+
 import numpy
 import matplotlib.pyplot
+
+from fintool.errors import Error
+
+
+class ChartsError(Error):
+    """Type to identify errors from this module."""
+    def __init__(self, msg):
+        super().__init__(f'Chart error: {msg}')
+
+
+class UnsupportedChartTypeError(ChartsError):
+    """
+    Raised when user requested an invalid chart type.
+    """
+    pass
 
 
 class BaseChart(abc.ABC):
@@ -112,14 +128,11 @@ class PieChart(BaseChart):
         matplotlib.pyplot.show()
 
 
-SUPPORTED_CHARTS = {'bar': BarChart, 'multiline': MultiLineChart, 'pie': PieChart}
-
-
-class UnsupportedChartTypeError(Exception):
-    """
-    Raised when user requested an invalid chart type.
-    """
-    pass
+SUPPORTED_CHARTS = {
+    'bar': BarChart,
+    'multiline': MultiLineChart,
+    'pie': PieChart
+}
 
 
 class ChartFactory:

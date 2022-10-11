@@ -1,15 +1,23 @@
 import json
 import pathlib
 
+from fintool.errors import Error
+
 
 DEFAULT_PATH = '~/.fintool/config.json'
 
 
-class MissingCfgFileError(Exception):
+class ConfigError(Error):
+    """Type to identify errors related to this module."""
+    def __init__(self, msg):
+        super().__init__(f'Config error: {msg}')
+
+
+class MissingCfgFileError(ConfigError):
     """Raised when the cfg file doesn't exists."""
 
 
-class InvalidOperationError(Exception):
+class InvalidOperationError(ConfigError):
     """Raised when the setting doesn't support append operation."""
 
 

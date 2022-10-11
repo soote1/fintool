@@ -5,17 +5,19 @@ to create and configure logger objects. Basically, it is a wrapper of
 std logging module.
 
 """
-
 import logging
 import sys
 
-
-class Error(Exception):
-    """Base error class for this module.
-    """
+from fintool.errors import Error
 
 
-class InvalidValueError(Exception):
+class LogError(Exception):
+    """Base error class for this module."""
+    def __init__(self, msg):
+        super().__init__(f'Log error: {msg}')
+
+
+class InvalidValueError(LogError):
     pass
 
 

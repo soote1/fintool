@@ -8,27 +8,26 @@ Supported clients:
     - CsvDb
 
 """
-
-
 import csv
 import pathlib
 
 from fintool.log import LoggingHelper
+from fintool.errors import Error
 
 
-class Error(Exception):
-    """
-    Base class for errors in this module.
-    """
+class DbError(Error):
+    """Type to identify errors related to this module."""
+    def __init__(self, msg):
+        super().__init__(f'Db error: {msg}')
 
 
-class UnsupportedDbTypeError(Error):
+class UnsupportedDbTypeError(DbError):
     """User defined error to be raised when a client
     requests an unsupported db type.
     """
 
 
-class MissingCollectionError(Error):
+class MissingCollectionError(DbError):
     """
     Raised when the collection does not exist.
     """
@@ -252,5 +251,6 @@ class CsvDb(AbstractDb):
     def remove_collection(self, collection_name):
         collection_file, _ = self.create_collection_objects(collection_name)
         collection_file.unlink()
+
 
 SUPPORTED_TYPES = {'csv': CsvDb}

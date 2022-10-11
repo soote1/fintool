@@ -8,34 +8,36 @@ import datetime
 
 from fintool.db import MissingCollectionError, DbFactory
 from fintool.log import LoggingHelper
+from fintool.errors import Error
 
 
-class Error(Exception):
-    """Base class for all errors in this module.
-    """
+class TransacError(Error):
+    """Base class for all errors in this module."""
+    def __init__(self, msg):
+        super().__init__(f'Transactions error: {msg}')
 
 
-class MissingFieldError(Error):
+class MissingFieldError(TransacError):
     """
     Raised when trying to convert a dictionary that misses a required field
     into a transaction.
     """
 
 
-class InvalidFieldValueError(Error):
+class InvalidFieldValueError(TransacError):
     """
     Raised when the user tries to assign an invalid value to some field.
     """
 
 
-class InvalidTransactionError(Error):
+class InvalidTransactionError(TransacError):
     """
     Raised when the user passes an invalid transaction object to the
     transaction manager.
     """
 
 
-class InvalidFieldError(Error):
+class InvalidFieldError(TransacError):
     """
     Raised when the user requests a value for an invalid field.
     """
