@@ -2,6 +2,8 @@
 This module provides action classes that can be put into a sequence
 to create commands for cli object.
 """
+import abc
+
 from fintool.transac import Transaction, TransactionManager
 from fintool.log import LoggingHelper
 from fintool.stats import StatsHelper
@@ -18,11 +20,15 @@ class ActionError(Error):
         super().__init__(f'Action error: {msg}')
 
 
-class Action:
-    def __init__(self):
-        pass
+class Action(abc.ABC):
+    """Base type to represent actions."""
+    def __init__(self, action_name):
+        self._logger = LoggingHelper.get_logger(action_name)
+        super().__init__()
 
+    @abc.abstractmethod
     def exec(self, data):
+        """Must be implemented by concrete classes."""
         pass
 
 
@@ -31,8 +37,7 @@ class CreateTransaction(Action):
     """
 
     def __init__(self):
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Create a Transaction object and insert it into data.
@@ -53,8 +58,7 @@ class SaveTransaction(Action):
     """
 
     def __init__(self):
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Retrieve a transaction from data, serialize it and save it in
@@ -80,8 +84,7 @@ class CreateFilters(Action):
         self.AMOUNT = 'amount'
         self.TAGS = 'tags'
         self.FILTERS = 'filters'
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Create a dictionary with filters from cli options.
@@ -109,8 +112,7 @@ class GetTransactions(Action):
         self.FILTERS = 'filters'
         self.FROM = 'from'
         self.TO = 'to'
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Use TransactionManager to get transactions from db.
@@ -130,8 +132,7 @@ class PrintTransactions(Action):
     """
     def __init__(self):
         self.TRANSACTIONS = 'transactions'
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Get transactions from data object and print them to stdout.
@@ -145,10 +146,9 @@ class RemoveTransaction(Action):
     """Remove a transaction from db.
     """
     def __init__(self):
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         self.ID = 'id'
         self.DATE = 'date'
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Get transaction id from data and remove the
@@ -162,12 +162,10 @@ class RemoveTransaction(Action):
 class UpdateTransaction(Action):
     """Update a transaction in db with new values.
     """
-
     def __init__(self):
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
         self.OLD_DATE = 'olddate'
         self.TRANSACTION = 'transaction'
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Get transaction from data and trigger update operation using
@@ -192,8 +190,7 @@ class CreateStats(Action):
     TRANSACTIONS = 'transactions'
 
     def __init__(self):
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Use stats helper to generate statistics.
@@ -212,8 +209,7 @@ class ShowStats(Action):
     DRAW_ONLY = 'draw_only'
 
     def __init__(self):
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Show a set of stats in in stdout.
@@ -271,8 +267,7 @@ class CreateTag(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper().get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -301,8 +296,7 @@ class AddTag(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -328,8 +322,7 @@ class GetTags(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -351,8 +344,7 @@ class EditTag(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -378,8 +370,7 @@ class RemoveTag(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -405,8 +396,7 @@ class PrintTags(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -421,6 +411,7 @@ class SyncController(Action):
 
     def __init__(self):
         """Initialize instance."""
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Run corresponding action based in provided cli args."""
@@ -449,8 +440,7 @@ class SyncTransactions(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -474,8 +464,7 @@ class ShowPendingTransactions(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Load the contents of the pending db and print them in stdout."""
@@ -491,8 +480,7 @@ class ShowUntaggedTransactions(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Load the contents of the untagged db and print them in stdout."""
@@ -508,8 +496,7 @@ class ShowConcepts(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Load the contents from untagged transactions db, generate the unique
@@ -527,8 +514,7 @@ class CommitTransactions(Action):
         """
         Initialize instance.
         """
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Use the sync manager to commit tagged transactions.
@@ -542,8 +528,7 @@ class TagTransactions(Action):
     """
     def __init__(self):
         """Initialize instance."""
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """Use the sync manager to tag transactions from untagged db."""
@@ -557,8 +542,7 @@ class ShowSetting(Action):
     """
     def __init__(self):
         """Initialize instance."""
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
@@ -576,8 +560,7 @@ class SetSetting(Action):
     """
     def __init__(self):
         """Initialize instance."""
-        self._logger = LoggingHelper.get_logger(self.__class__.__name__)
-        super().__init__()
+        super().__init__(self.__class__.__name__)
 
     def exec(self, data):
         """
